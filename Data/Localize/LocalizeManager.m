@@ -12,16 +12,18 @@ static NSString* stringsFileSanboxPath = nil;
 @implementation LocalizeManager
 
 +(void)initialize {
-    currentLanguage = [[NSLocale preferredLanguages] firstObject];
+    NSString* language = [[NSLocale preferredLanguages] firstObject];
+    currentLanguage = language;
     
-    if (! ([currentLanguage isEqualToString:LANGUAGE_zh_Hans] || [currentLanguage isEqualToString:LANGUAGE_zh_Hant])) {
-        
-        if (__StringContains__(currentLanguage, LANGUAGE_zh_HK) || __StringContains__(currentLanguage, LANGUAGE_zh_TW)) {
-            currentLanguage = LANGUAGE_zh_Hant ;
-        } else if (__StringContains__(currentLanguage, LANGUAGE_zh)) {
-            currentLanguage = LANGUAGE_zh_Hans;
-        }
-        
+    // For Chinese
+    if (__StringContains__(language, LANGUAGE_zh_Hans)) {
+        currentLanguage = LANGUAGE_zh_Hans;
+    } else if (__StringContains__(language, LANGUAGE_zh_Hant)) {
+        currentLanguage = LANGUAGE_zh_Hant ;
+    } else if (__StringContains__(language, LANGUAGE_zh_HK) || __StringContains__(language, LANGUAGE_zh_TW)) {
+        currentLanguage = LANGUAGE_zh_Hant ;
+    } else if (__StringContains__(language, LANGUAGE_zh)) {
+        currentLanguage = LANGUAGE_zh_Hans;
     }
 
     [super initialize];

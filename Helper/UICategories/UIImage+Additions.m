@@ -1,6 +1,6 @@
 #import "UIImage+Additions.h"
 
-@implementation UIImage (Additions)
+@implementation UIImage (Alpha)
 
 
 - (UIImage *)imageByApplyingAlpha:(CGFloat) alpha {
@@ -25,5 +25,27 @@
     return newImage;
 }
 
+
+@end
+
+
+
+@implementation UIImage (Color)
+
++ (UIImage *)imageWithColor:(UIColor*) color
+{
+    return [self imageWithColor:color rect:CGRectMake(0.0f, 0.0f, 1.0f, 1.0f)];
+}
+
++ (UIImage *)imageWithColor:(UIColor*) color rect:(CGRect)rect
+{
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
 
 @end

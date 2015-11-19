@@ -13,7 +13,7 @@
 
 #define I18N(_key) [LocalizeManager getLocalized: _key]
 
-#define I18NS(_key, args...) [LocalizeManager connect: _key, ##args]
+#define I18NS(_key, args...) [LocalizeManager connect: _key, ##args, nil]
 
 #define I18NFormat(_key, args...) [NSString stringWithFormat: I18N(_key), ##args]
 
