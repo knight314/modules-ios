@@ -11,13 +11,25 @@
 
 @implementation UIWebView (HookDelegateMethods)
 
+static const void* key_delegate = "delegate";
+
 +(void)load {
     Method oldMethod = class_getInstanceMethod([self class], @selector(setDelegate:));
     Method newMethod = class_getInstanceMethod([self class], @selector(__Hook_setDelegate:));
     method_exchangeImplementations(oldMethod, newMethod);
+    
+    // another way
+    /*
+    IMP implement = method_getImplementation(oldMethod);
+    void(*function)(id, SEL, id) = (__typeof(function))implement;
+    method_setImplementation(oldMethod, imp_implementationWithBlock(^(id target, id delegate) {
+        objc_setAssociatedObject(target, key_delegate, delegate, OBJC_ASSOCIATION_ASSIGN);
+        
+        // invoke old method, set the delegate itself
+        function(target, @selector(setDelegate:), target);
+    }));
+     */
 }
-
-static const void* key_delegate = "delegate";
 
 -(void) __Hook_setDelegate:(id<UIWebViewDelegate>)delegate {
     objc_setAssociatedObject(self, key_delegate, delegate, OBJC_ASSOCIATION_ASSIGN);
