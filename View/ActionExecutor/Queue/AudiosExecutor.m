@@ -43,23 +43,6 @@
 // http://stackoverflow.com/questions/13390039/playing-a-sound-in-ios-pauses-background-music
 
 + (void)setupAudioSession {
-
-    // Deprecated:Deprecated in iOS 7.0.
-    
-    /*
-    AudioSessionInitialize(NULL,NULL,NULL,NULL);
-    
-    OSStatus activationResult = 0;
-    activationResult = AudioSessionSetActive(true);
-    
-    UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
-    AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);
-    
-    UInt32 allowMixing = true;
-    OSStatus propertySetError = 0;
-    propertySetError = AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryMixWithOthers,sizeof(allowMixing),&allowMixing);
-    */
-    
     // AVAudioSessionCategoryOptionMixWithOthers is the key point
     AVAudioSession *session = [AVAudioSession sharedInstance];
     NSError* categoryError = nil;

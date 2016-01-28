@@ -178,7 +178,9 @@
         if (navController.topViewController) topController = navController.topViewController;
     } else if ([topController isKindOfClass:[UITabBarController class]]) {
         UITabBarController* tabBarController = (UITabBarController*)topController;
-        topController = tabBarController.selectedViewController;
+        // cause This may return the "More" navigation controller if it exists, so cannot use this
+//        topController = tabBarController.selectedViewController;
+        topController = [tabBarController.viewControllers objectAtIndex: tabBarController.selectedIndex];
     }
     
     while ([topController presentedViewController])	topController = [topController presentedViewController];
