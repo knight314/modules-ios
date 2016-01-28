@@ -2,7 +2,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "LayerHelper.h"
-#import "UIView+Frame.h"
 
 
 
@@ -205,44 +204,74 @@
 
 
 #pragma mark - About Width
+
++(void) resizeSizeBySubviewsOccupiedSize: (UIView*)view
+{
+    [self resizeWidthBySubviewsOccupiedWidth: view];
+    [self resizeHeightBySubviewsOccupiedHeight: view];
+}
+
 // i.e. when you chang localize text in label
-// the width of the label change, you can invoke this to fix
-// resize it recursive
-+(void) resizeWidthBySubviewsOccupiedWidth: (UIView*)superview
+// the width of the label change, you can invoke this to fix, resize it recursive
++(void) resizeWidthBySubviewsOccupiedWidth: (UIView*)view
 {
-    for (UIView* view in superview.subviews) {
-        [ViewHelper resizeWidthBySubviewsOccupiedWidth: view];
+    [self resizeLengthBySubviewsOccupied:view isForWidth:YES];
+}
+
++(void) resizeHeightBySubviewsOccupiedHeight: (UIView*)view
+{
+    [self resizeLengthBySubviewsOccupied:view isForWidth:NO];
+}
+
++(void) resizeLengthBySubviewsOccupied: (UIView*)view isForWidth:(BOOL)isForWidth
+{
+    for (UIView* subview in view.subviews) {
+        [ViewHelper resizeLengthBySubviewsOccupied: subview isForWidth:isForWidth];
     }
     
-    float width = [ViewHelper getSubViewsOccupyLongestWidth: superview];
-    // must have subviews
-    //    if (superview.subviews.count) [superview setSizeWidth: width];
-    if (width != 0) [superview setSizeWidth: width];    // the same as above
+    CGFloat length = [ViewHelper getSubViewsOccupiedLength: view isForWidth:isForWidth];
+    
+    if (length == 0) return;
+    
+    CGRect rect = view.frame;
+    if (isForWidth) {
+        rect.size.width = length;
+    } else {
+        rect.size.height = length;
+    }
+    view.frame = rect;
 }
 
-// superview must have subviews
-+(float) getSubViewsOccupyLongestWidth: (UIView*)superView
++(CGFloat) getSubViewsOccupiedLongestWidth: (UIView*)view
 {
-    return [ViewHelper getSubViewsOccupyLongestWidth: superView originX:0];
+    return [self getSubViewsOccupiedLength: view isForWidth:YES];
 }
 
-+(float) getSubViewsOccupyLongestWidth: (UIView*)originView originX: (float)originX
++(CGFloat) getSubViewsOccupiedLongestHeight: (UIView*)view
 {
-    float width = 0.0f;
-    for (UIView* subview in originView.subviews) {
-        float right = 0.0f;
-        
+    return [self getSubViewsOccupiedLength: view isForWidth:NO];
+}
+
++(CGFloat) getSubViewsOccupiedLength: (UIView*)view isForWidth:(BOOL)isForWidth
+{
+    return [self getSubViewsOccupiedLength: view origin:0 isForWidth:isForWidth];
+}
+
++(CGFloat) getSubViewsOccupiedLength: (UIView*)view origin: (CGFloat)origin isForWidth:(BOOL)isForWidth
+{
+    CGFloat result = 0.0f;
+    for (UIView* subview in view.subviews) {
+        CGFloat limit = 0.0f;
+        CGRect rect = subview.frame;
         if (subview.subviews.count != 0) {
-            float x = [subview originX] + originX;
-            right = [ViewHelper getSubViewsOccupyLongestWidth: subview originX: x];
+            CGFloat ruler = (isForWidth ? CGRectGetMinX(rect) : CGRectGetMinY(rect)) + origin;
+            limit = [self getSubViewsOccupiedLength: subview origin: ruler isForWidth:isForWidth];
         } else {
-            right = [subview originX] + [subview sizeWidth] + originX;
+            limit = (isForWidth ? CGRectGetMaxX(rect) : CGRectGetMaxY(rect)) + origin;
         }
-        
-        width = width < right ? right : width;
+        result = result < limit ? limit : result;
     }
-    
-    return width;
+    return result;
 }
 
 
@@ -353,7 +382,8 @@
         
         indicator.color = [UIColor blackColor];
         [containerView addSubview: indicator];
-        indicator.center = [containerView middlePoint];
+        CGRect rect = containerView.frame;
+        indicator.center = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
     }
     [containerView bringSubviewToFront: indicator];
     return indicator;

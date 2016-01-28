@@ -35,9 +35,11 @@
 
 
 #pragma mark - About Width
-+(void) resizeWidthBySubviewsOccupiedWidth: (UIView*)superview;
-+(float) getSubViewsOccupyLongestWidth: (UIView*)superView;
-
++(void) resizeSizeBySubviewsOccupiedSize: (UIView*)view;
++(void) resizeWidthBySubviewsOccupiedWidth: (UIView*)view;
++(void) resizeHeightBySubviewsOccupiedHeight: (UIView*)view;
++(CGFloat) getSubViewsOccupiedLongestWidth: (UIView*)view;
++(CGFloat) getSubViewsOccupiedLongestHeight: (UIView*)view;
 
 #pragma mark - About Subviews
 +(void) iterateSubView: (UIView*)superView handler:(BOOL (^)(id subView))handler;
