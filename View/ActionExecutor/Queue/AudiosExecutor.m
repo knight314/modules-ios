@@ -23,7 +23,6 @@
     
     double inactivityTime = [[times firstObject] doubleValue];
     if (inactivityTime > 0) {
-//        double delayTime = [config[@"delay"] doubleValue];
         NSArray* resources = @[config, value];
         [self performSelector:@selector(playAudionAfterDelay:) withObject:resources afterDelay:inactivityTime];
     } else {
@@ -122,8 +121,6 @@
         }
         [audioPlayer performSelectorInBackground:selector withObject:nil];
     }
-    
-    
 }
 
 

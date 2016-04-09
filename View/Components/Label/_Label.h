@@ -8,9 +8,6 @@
 
 #import "GradientLabel.h"
 
-
-#import "UILabel+AdjustWidth.h"
-
-
 #import "FontHelper.h"
 
+#import "UILabel+Additions.h"

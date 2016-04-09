@@ -9,13 +9,13 @@
 
 //#ifdef DEBUG
 //
-//#ifndef _______DLog
+//#ifndef _______DLOG
 //
-//#define _______DLog(format, ...) NSLog(format, ##__VA_ARGS__)
+//#define _______DLOG(format, ...) NSLog(format, ##__VA_ARGS__)
 //
 //#else
 //
-//#define _______DLog(format, ...)
+//#define _______DLOG(format, ...)
 //
 //#endif
 //
@@ -118,12 +118,12 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
 
 -(void)keyboardWillChangeFrame:(NSNotification*)notification
 {
-//    _______DLog(@"keyboardWillChangeFrame");
+//    _______DLOG(@"keyboardWillChangeFrame");
 }
 
 -(void)keyboardWillShow:(NSNotification*)notification
 {
-//    _______DLog(@"keyboardWillShow");
+//    _______DLOG(@"keyboardWillShow");
     // in B and ios 8 situation
     if (! self.isKeyboardShowing) {
         adjustView = [ViewHelper getTopView];
@@ -132,7 +132,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
     _isKeyboardShowing = YES;
     
     keyboardSize = [KeyBoardHelper getKeyboardSizeByKeyboardNotification: notification];
-//    _______DLog(@"get ++++++ keyboardSize :  %@", NSStringFromCGSize(keyboardSize));
+//    _______DLOG(@"get ++++++ keyboardSize :  %@", NSStringFromCGSize(keyboardSize));
     
     [self executeAdjustFrameWork];
     
@@ -143,7 +143,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-//    _______DLog(@"keyboardWillHide");
+//    _______DLOG(@"keyboardWillHide");
     [self restoreFrame];
     
     
@@ -162,14 +162,14 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
 
 -(void)textFieldDidBeginEditing:(NSNotification*)notification
 {
-//    _______DLog(@"textFieldDidBeginEditing");
+//    _______DLOG(@"textFieldDidBeginEditing");
     editView = notification.object;
     [self executeAdjustFrameWork];
 }
 
 -(void)textFieldDidEndEditing:(NSNotification*)notification
 {
-//    _______DLog(@"textFieldDidEndEditing");
+//    _______DLOG(@"textFieldDidEndEditing");
     
     editView = nil;
 }
@@ -179,14 +179,14 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
 
 -(void)textViewDidBeginEditing:(NSNotification*)notification
 {
-//    _______DLog(@"textViewDidBeginEditing");
+//    _______DLOG(@"textViewDidBeginEditing");
     editView = notification.object;
     [self executeAdjustFrameWork];
 }
 
 -(void)textViewDidEndEditing:(NSNotification*)notification
 {
-//    _______DLog(@"textViewDidEndEditing");
+//    _______DLOG(@"textViewDidEndEditing");
     
     UIView* editingView = editView;
     NSNumber* addSizeHeightNum = objc_getAssociatedObject(editingView, textViewIncrementSizeHeightKey);
@@ -203,7 +203,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
 
 -(void)textViewDidChange:(NSNotification*)notification
 {
-//    _______DLog(@"textViewDidChange");
+//    _______DLOG(@"textViewDidChange");
 }
 
 
@@ -214,7 +214,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
 // Base on the Sequence above, we found a way like this ...
 -(void) executeAdjustFrameWork
 {
-//    _______DLog(@"--- executeAdjustFrameWork");
+//    _______DLOG(@"--- executeAdjustFrameWork");
     SEL executeSelector = @selector(executeAdjustFrameWork);
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:executeSelector object:nil];
     
@@ -223,7 +223,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:adjustSelector object:nil];
         [self performSelector:adjustSelector withObject:nil afterDelay:0.1];
     } else {
-//        _______DLog(@"--- next time executeAdjustFrameWork");
+//        _______DLOG(@"--- next time executeAdjustFrameWork");
         [self performSelector:executeSelector withObject:nil afterDelay: 0.1];
     }
 }
@@ -233,7 +233,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
 // B . rootView ([ViewHelper getRootView]) != adjustingView ([ViewHelper getTopView])  // To be test and solve ...
 -(void) adjustFrame
 {
-//    _______DLog(@"+++ adjustFrame");
+//    _______DLOG(@"+++ adjustFrame");
     UIView* editingView = editView;
     UIView* adjustingView = adjustView;
     CGSize keyBoardSize = keyboardSize;
@@ -249,7 +249,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
     
     // this situation ~~~
     if (adjustView == rootView) {
-//        _______DLog(@"do some with editingViewBaseline ...");
+//        _______DLOG(@"do some with editingViewBaseline ...");
     }
     
     // caculate the keyBoardBaseline
@@ -294,7 +294,7 @@ static const char* textViewIncrementSizeHeightKey = "textViewIncrementSizeHeight
     if ([adjustingView originY] == y) return;
     
     
-//    _______DLog(@"adjustFrame -up +down : %d", y);
+//    _______DLOG(@"adjustFrame -up +down : %d", y);
     [UIView animateWithDuration: 0.5 animations:^{
         [adjustingView setOriginY: y];
     } completion:nil];

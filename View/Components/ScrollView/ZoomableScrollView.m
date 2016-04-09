@@ -2,13 +2,13 @@
 
 #ifdef DEBUG
 
-#ifndef __DLog
+#ifndef __DLOG
 
-#define __DLog(format, ...) NSLog(format, ##__VA_ARGS__)
+#define __DLOG(format, ...) NSLog(format, ##__VA_ARGS__)
 
 #else
 
-#define __DLog(format, ...)
+#define __DLOG(format, ...)
 
 #endif
 
@@ -109,13 +109,13 @@
     
 #ifdef DEBUG
     
-    __DLog(@"%@", NSStringFromCGRect(scrollView.frame));
-    __DLog(@"%@", NSStringFromCGRect(scrollView.bounds));
+    __DLOG(@"%@", NSStringFromCGRect(scrollView.frame));
+    __DLOG(@"%@", NSStringFromCGRect(scrollView.bounds));
     
-    __DLog(@"%@", NSStringFromCGRect(view.frame));
-    __DLog(@"%@", NSStringFromCGRect(view.bounds));
+    __DLOG(@"%@", NSStringFromCGRect(view.frame));
+    __DLOG(@"%@", NSStringFromCGRect(view.bounds));
     
-    __DLog(@"view center : %f,%f", view.center.x, view.center.y);
+    __DLOG(@"view center : %f,%f", view.center.x, view.center.y);
     
 #endif
     
@@ -128,17 +128,17 @@
     
 #ifdef DEBUG
     
-    __DLog(@"***************** %f *****************", scale);
-    __DLog(@"%@", NSStringFromCGRect(scrollView.frame));
-    __DLog(@"%@", NSStringFromCGRect(scrollView.bounds));
+    __DLOG(@"***************** %f *****************", scale);
+    __DLOG(@"%@", NSStringFromCGRect(scrollView.frame));
+    __DLOG(@"%@", NSStringFromCGRect(scrollView.bounds));
     
-    __DLog(@"%@", NSStringFromCGRect(view.frame));
-    __DLog(@"%@", NSStringFromCGRect(view.bounds));
+    __DLOG(@"%@", NSStringFromCGRect(view.frame));
+    __DLOG(@"%@", NSStringFromCGRect(view.bounds));
     
     // view.center.x = view's origin center.x * scale
     // view.center.y = view's origin center.y * scale
     
-    __DLog(@"view center : %f,%f", view.center.x, view.center.y);
+    __DLOG(@"view center : %f,%f", view.center.x, view.center.y);
 
 #endif
     
