@@ -6,7 +6,7 @@
 @implementation DictionaryHelper
 
 static BOOL (^combineHandler)(NSString* key, NSMutableDictionary* destination, NSDictionary* source) = nil;
-+(void) setCombineHandler:(BOOL (^)(NSString* key, NSMutableDictionary* destination, NSDictionary* source))handler
++(void) setCombineHandler:(DictionaryCombineHandler)handler
 {
     combineHandler = handler;
 }
@@ -22,7 +22,7 @@ static BOOL (^combineHandler)(NSString* key, NSMutableDictionary* destination, N
     [self combine: destination with:source handler:combineHandler];
 }
 
-+(void) combine: (NSMutableDictionary*)destination with:(NSDictionary*)source handler:(BOOL (^)(NSString* key, NSMutableDictionary* destination, NSDictionary* source))handler
++(void) combine: (NSMutableDictionary*)destination with:(NSDictionary*)source handler:(DictionaryCombineHandler)handler
 {
     id key = nil;
     NSEnumerator* sourceEnumerator = [source keyEnumerator];
@@ -35,15 +35,8 @@ static BOOL (^combineHandler)(NSString* key, NSMutableDictionary* destination, N
         } else if ([sourceObj isKindOfClass:[NSArray class]] && [destinationObj isKindOfClass:[NSArray class]]) {
             [ArrayHelper combine:(NSMutableArray*)destinationObj with:(NSArray*)sourceObj];
         } else {
-            
-            if (handler) {
-                if (handler(key, destination, source)) {
-                    [destination setObject: sourceObj forKey: key];
-                }
-            } else {
-                [destination setObject: sourceObj forKey: key];
-            }
-            
+            if (handler && !handler(key, destination, source)) continue;
+            [destination setObject: sourceObj forKey: key];
         }
     }
 }

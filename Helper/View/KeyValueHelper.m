@@ -63,6 +63,8 @@
         translatedValue = translateValueHandler(object, value, propertyType, keyPath);
     }
     
+    // note: if "object" don't have the "keyPath"
+    // like "NormalButton" , override the "-(void) setValue:(id)value forUndefinedKey:(NSString *)key" method
     [object setValue:translatedValue forKeyPath: keyPath];
 }
 

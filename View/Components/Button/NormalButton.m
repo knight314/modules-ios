@@ -36,6 +36,7 @@
 }
 
 
+/*
 -(void) setupWithConfig: (NSDictionary*)config
 {
     NSDictionary* dic = config;
@@ -66,6 +67,56 @@
     if (dic[@"n_attributed_title"]) [self setAttributedTitle: dic[@"n_attributed_title"] forState:UIControlStateNormal];
     if (dic[@"s_attributed_title"]) [self setAttributedTitle: dic[@"s_attributed_title"] forState:UIControlStateSelected];
     if (dic[@"h_attributed_title"]) [self setAttributedTitle: dic[@"h_attributed_title"] forState:UIControlStateHighlighted];
+}
+ */
+
+#pragma mark - KeyValue Coding
+
+-(void) setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    // title
+    if ([key isEqualToString:@"n_title"]) [self setTitle: value forState:UIControlStateNormal];
+    else
+    if ([key isEqualToString:@"s_title"]) [self setTitle: value forState:UIControlStateSelected];
+    else
+    if ([key isEqualToString:@"h_title"]) [self setTitle: value forState:UIControlStateHighlighted];
+    else
+    
+    if ([key isEqualToString:@"n_title_color"]) [self setTitleColor: [ColorHelper parseColor: value] forState:UIControlStateNormal];
+    else
+    if ([key isEqualToString:@"s_title_color"]) [self setTitleColor: [ColorHelper parseColor: value] forState:UIControlStateSelected];
+    else
+    if ([key isEqualToString:@"h_title_color"]) [self setTitleColor: [ColorHelper parseColor: value] forState:UIControlStateHighlighted];
+    else
+    
+    if ([key isEqualToString:@"n_title_shadow_color"]) [self setTitleShadowColor: [ColorHelper parseColor: value] forState:UIControlStateNormal];
+    else
+    if ([key isEqualToString:@"s_title_shadow_color"]) [self setTitleShadowColor: [ColorHelper parseColor: value] forState:UIControlStateSelected];
+    else
+    if ([key isEqualToString:@"h_title_shadow_color"]) [self setTitleShadowColor: [ColorHelper parseColor: value] forState:UIControlStateHighlighted];
+    else
+    
+    // image
+    if ([key isEqualToString:@"n_image"]) [self setImage: value forState:UIControlStateNormal];
+    else
+    if ([key isEqualToString:@"s_image"]) [self setImage: value forState:UIControlStateSelected];
+    else
+    if ([key isEqualToString:@"h_image"]) [self setImage: value forState:UIControlStateHighlighted];
+    else
+    
+    if ([key isEqualToString:@"n_bg_image"]) [self setBackgroundImage: value forState:UIControlStateNormal];
+    else
+    if ([key isEqualToString:@"s_bg_image"]) [self setBackgroundImage: value forState:UIControlStateSelected];
+    else
+    if ([key isEqualToString:@"h_bg_image"]) [self setBackgroundImage: value forState:UIControlStateHighlighted];
+    else
+    
+    // attribute title
+    if ([key isEqualToString:@"n_attributed_title"]) [self setAttributedTitle: value forState:UIControlStateNormal];
+    else
+    if ([key isEqualToString:@"s_attributed_title"]) [self setAttributedTitle: value forState:UIControlStateSelected];
+    else
+    if ([key isEqualToString:@"h_attributed_title"]) [self setAttributedTitle: value forState:UIControlStateHighlighted];
 }
 
 @end

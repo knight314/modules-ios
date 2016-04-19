@@ -6,7 +6,6 @@ typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, NSString* type, N
 @interface KeyValueHelper : NSObject
 
 -(KeyValueCodingTranslator) translateValueHandler;
-
 -(void) setTranslateValueHandler:(KeyValueCodingTranslator)handler;
 
 #pragma mark - Public Methods

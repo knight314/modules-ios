@@ -4,8 +4,4 @@
 
 @property (copy) void(^didTouchUpInsideAction)(NormalButton* sender);
 
-
--(void) setupWithConfig: (NSDictionary*)config;
-
-
 @end

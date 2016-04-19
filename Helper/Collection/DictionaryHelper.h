@@ -1,13 +1,15 @@
 #import <Foundation/Foundation.h>
 
+typedef BOOL (^DictionaryCombineHandler)(NSString* sourceKey, NSMutableDictionary* destination, NSDictionary* source);
+
 @interface DictionaryHelper : NSObject
 
-+(void) setCombineHandler:(BOOL (^)(NSString* key, NSMutableDictionary* destination, NSDictionary* source))handler;
++(void) setCombineHandler:(DictionaryCombineHandler)handler;
 
 +(NSMutableDictionary*) combines: (NSDictionary*)destination with:(NSDictionary*)source;
 +(void) combine: (NSMutableDictionary*)destination with:(NSDictionary*)source;
 
-+(void) combine: (NSMutableDictionary*)destination with:(NSDictionary*)source handler:(BOOL (^)(NSString* key, NSMutableDictionary* destination, NSDictionary* source))handler;
++(void) combine: (NSMutableDictionary*)destination with:(NSDictionary*)source handler:(DictionaryCombineHandler)handler;
 
 
 +(NSMutableDictionary*) deepCopy: (NSDictionary*)source ;
