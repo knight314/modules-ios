@@ -1,6 +1,6 @@
 #import "LayerHelper.h"
 
-#import "ViewKeyValueHelper.h"
+#import "KeyValueHelper.h"
 
 
 @implementation LayerHelper
@@ -14,7 +14,7 @@ NSDictionary* layerPropertiesTypes = nil;
 +(NSDictionary*) propertiesTypes
 {
     if (! layerPropertiesTypes) {
-        layerPropertiesTypes = [ViewKeyValueHelper getClassPropertieTypes: [CALayer class]];
+        layerPropertiesTypes = [KeyValueHelper getClassPropertieTypes: [CALayer class]];
     }
     return layerPropertiesTypes;
 }
@@ -34,7 +34,7 @@ NSDictionary* layerPropertiesTypes = nil;
 +(void) setValue:(id)value keyPath:(NSString*)keyPath layer:(CALayer*)layer
 {
     NSString* keyPathType = [self propertiesTypes][keyPath];
-    id newValue = [ViewKeyValueHelper translateValue:value type:keyPathType];
+    id newValue = [KeyValueHelper translateValue:value type:keyPathType];
     [layer setValue: newValue forKeyPath:keyPath];
 }
 

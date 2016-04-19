@@ -26,9 +26,7 @@
 {
     NSArray* loopIntervals = self.loopIntervals;
     int lastIndex = (int)loopIntervals.count - 1;
-    
     if (intervalIndex > lastIndex) intervalIndex = lastIndex;
-    
     return [loopIntervals[intervalIndex] doubleValue];
 }
 
@@ -39,7 +37,7 @@
 #pragma mark - Public Methods
 
 
-- (void) playAudioInBackground
+- (void) playAudioInBackgroundThread
 {
     if ([NSThread isMainThread]) {
         [self performSelectorInBackground:@selector(play) withObject:nil];
@@ -72,8 +70,7 @@
     
     // get interval & play it in background
     double interval = [self getIntervalTime: currentLoopCount - 1];
-    
-    [self performSelector:@selector(playAudioInBackground) withObject:nil afterDelay:interval];
+    [self performSelector:@selector(playAudioInBackgroundThread) withObject:nil afterDelay:interval];
 }
 
 
@@ -95,7 +92,16 @@ NSOperationQueue *audioFaderQueue;
 }
 
 
-
+// http://stackoverflow.com/questions/13390039/playing-a-sound-in-ios-pauses-background-music
++(void) setupAudioSession
+{
+    // AVAudioSessionCategoryOptionMixWithOthers is the key point
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    NSError* categoryError = nil;
+    [session setCategory:AVAudioSessionCategoryPlayback withOptions:AVAudioSessionCategoryOptionMixWithOthers error:&categoryError];
+    NSError* activeError = nil;
+    [session setActive:YES error:&activeError];
+}
 
 
 @end

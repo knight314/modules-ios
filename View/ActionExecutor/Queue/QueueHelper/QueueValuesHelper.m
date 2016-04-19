@@ -1,7 +1,7 @@
 #import "QueueValuesHelper.h"
 
 #import "LayerHelper.h"
-#import "ViewKeyValueHelper.h"
+#import "KeyValueHelper.h"
 
 @implementation QueueValuesHelper
 
@@ -18,7 +18,7 @@
         if ([value isKindOfClass:[NSString class]] && [value isEqualToString:@"c_v"]) {
             newValue = [object.layer valueForKeyPath:keyPath];
         } else {
-            newValue = [ViewKeyValueHelper translateValue:value type:keyPathType];
+            newValue = [KeyValueHelper translateValue:value type:keyPathType];
         }
         
         [results addObject:newValue];

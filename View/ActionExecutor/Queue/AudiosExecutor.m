@@ -1,56 +1,34 @@
 #import "AudiosExecutor.h"
 
-#import "NSArray+Additions.h"
-#import "ViewKeyValueHelper.h"
-
 #import "AudioHandler.h"
-
+#import "NSArray+Additions.h"
+#import "KeyValueHelper.h"
 
 @implementation AudiosExecutor
 
-
 @synthesize systemSounds;
-
 @synthesize audiosPlayers;
-
 
 
 -(void)execute:(NSDictionary *)config objects:(NSArray *)objects values:(NSArray *)values times:(NSArray *)times durationsRep:(NSMutableArray *)durationsQueue beginTimesRep:(NSMutableArray *)beginTimesQueue
 {
-
     id value = [values firstObject];
     if (!value) value = config[@"values"];
-    
     double inactivityTime = [[times firstObject] doubleValue];
     if (inactivityTime > 0) {
         NSArray* resources = @[config, value];
-        [self performSelector:@selector(playAudionAfterDelay:) withObject:resources afterDelay:inactivityTime];
+        [self performSelector:@selector(playAudioDelay:) withObject:resources afterDelay:inactivityTime];
     } else {
         [self playAudio: config value:value];
     }
 }
 
--(void) playAudionAfterDelay: (NSArray*)resources
+-(void) playAudioDelay: (NSArray*)resources
 {
     NSDictionary* config = [resources firstObject];
     id value = [resources lastObject];
-    
     [self playAudio: config value:value];
 }
-
-
-// http://stackoverflow.com/questions/13390039/playing-a-sound-in-ios-pauses-background-music
-
-+ (void)setupAudioSession {
-    // AVAudioSessionCategoryOptionMixWithOthers is the key point
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    NSError* categoryError = nil;
-    [session setCategory:AVAudioSessionCategoryPlayback withOptions:AVAudioSessionCategoryOptionMixWithOthers error:&categoryError];
-    NSError* activeError = nil;
-    [session setActive:YES error:&activeError];
-}
-
-
 
 -(void) playAudio: (NSDictionary*)config value:(id)value 
 {
@@ -72,7 +50,7 @@
 #endif
         if (soundID == 0) {
             
-            NSString* path = [ViewKeyValueHelper getResourcePath: value];
+            NSString* path = [KeyValueHelper getResourcePath: value];
             NSURL* soundURL = [NSURL fileURLWithPath:path];
             AudioServicesCreateSystemSoundID((__bridge_retained CFURLRef)soundURL, &soundID);
             
@@ -91,60 +69,56 @@
         
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            [AudiosExecutor setupAudioSession];
+            [AudioHandler setupAudioSession];
         });
         
+        // get the AVAudioPlayer instance
         if (!audiosPlayers) {
             audiosPlayers = [NSMutableDictionary dictionary];
         }
-        
-        AudioHandler* audioPlayer = [audiosPlayers objectForKey: value];
-        
-        if (! audioPlayer) {
-            NSString* path = [ViewKeyValueHelper getResourcePath: value];
+        AudioHandler* audio_player = [audiosPlayers objectForKey: value];
+        if (! audio_player) {
+            NSString* path = [KeyValueHelper getResourcePath: value];
             NSError* error = nil;
-            audioPlayer = [[AudioHandler alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error: &error];
+            audio_player = [[AudioHandler alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error: &error];
             if (error) return;
-            [audiosPlayers setObject: audioPlayer forKey:value];
-            [audioPlayer prepareToPlay];
+            [audiosPlayers setObject: audio_player forKey:value];
+            [audio_player prepareToPlay];
         }
         
-        // u can set 'volume' / 'numberOfLoops' / 'currentTime' / 'intervalsLoops' ...
+        // the AudioHandler properties values
         if (config[@"player"]) {
-            [[ViewKeyValueHelper sharedInstance] setValues: config[@"player"] object:audioPlayer];
+            [[KeyValueHelper sharedInstance] setValues: config[@"player"] object:audio_player];
         }
         
-        // such as 'pause' / 'stop' / 'play' , default 'playAudioInBackground'
+        // the AudioHandler selectors
         SEL selector = @selector(play);
         if (config[@"selector"]) {
             selector = NSSelectorFromString(config[@"selector"]);
         }
-        [audioPlayer performSelectorInBackground:selector withObject:nil];
+        [audio_player performSelectorInBackground:selector withObject:nil];
     }
 }
 
-
-
 -(void) clearCaches
 {
+    // clear systemSounds
     for (NSString* value in systemSounds) {
 #if __LP64__
         SystemSoundID soundID = [systemSounds[value] unsignedIntValue];
 #else
         SystemSoundID soundID = [systemSounds[value] unsignedLongValue];
 #endif
-        
         AudioServicesDisposeSystemSoundID(soundID);
     }
     [systemSounds removeAllObjects];
     
-    // 
+    // clear audiosPlayers
     for (NSString* value in audiosPlayers) {
         AudioHandler* audioPlayer = audiosPlayers[value];
         [audioPlayer stop];
     }
     [audiosPlayers removeAllObjects];
-    
 }
 
 

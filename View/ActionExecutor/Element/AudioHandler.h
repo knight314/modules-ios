@@ -3,13 +3,9 @@
 @interface AudioHandler : AVAudioPlayer
 
 
-
 // count 
 @property(assign) NSUInteger intervalsLoops;
-
 @property(strong) NSArray* loopIntervals;
-
-
 
 
 @property(assign) float fadeDelay;
@@ -17,21 +13,10 @@
 @property(assign) float fadeOverDuration;
 
 
-
-
-#pragma mark - Public Methods
-
-
-- (void) playAudioInBackground;
-
-
-
-
 #pragma mark - Class Methods
 
 +(NSOperationQueue *) audioCrossFadeQueue;
 
-
-
++(void) setupAudioSession;
 
 @end

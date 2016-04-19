@@ -1,10 +1,6 @@
 #import "FontHelper.h"
-
-#import "ViewKeyValueHelper.h"
-
+#import "KeyValueHelper.h"
 #include <CoreText/CoreText.h>
-
-
 
 @implementation FontHelper
 
@@ -35,7 +31,7 @@
 
 // need CoreText.framework, path is true type font file path
 +(UIFont*) getFontFromTTFFile: (NSString*)path withSize:(int)fontSize {
-    NSString* ttfPath = [ViewKeyValueHelper getResourcePath: path];
+    NSString* ttfPath = [KeyValueHelper getResourcePath: path];
     
     CGDataProviderRef fontDataProvider = CGDataProviderCreateWithFilename([ttfPath UTF8String]);
     CGFontRef fontRef = CGFontCreateWithDataProvider(fontDataProvider);

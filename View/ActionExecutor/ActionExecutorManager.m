@@ -23,10 +23,12 @@
 -(void) removeActionExecutor: (NSString*)action {
     [executors removeObjectForKey: action];
 }
+
 -(NSDictionary*) getActionExecutors
 {
     return [NSDictionary dictionaryWithDictionary: executors];
 }
+
 -(ActionExecutorBase*) getActionExecutor: (NSString*)action {
     return [executors objectForKey: action];
 }
@@ -34,7 +36,6 @@
 -(void) runActionExecutors: (id)actionsConfigs onObjects:(NSArray*)objects values:(NSArray*)values baseTimes:(NSArray*)baseTimes {
     
     // NSArray is ordered , but NSDictionary is not.
-    
     if ([actionsConfigs isKindOfClass:[NSArray class]]) {
         
         for (NSInteger i = 0; i < [actionsConfigs count]; i++) {
@@ -55,5 +56,14 @@
     ActionExecutorBase* executor = [self getActionExecutor: action];
     [executor execute: config objects:objects values:values times:baseTimes];
 }
+
+
+#pragma mark - Extra for Audio
+
+-(void) runAudioActionExecutors: (id)actionsConfigs
+{
+    [self runActionExecutors:actionsConfigs onObjects:@[@""] values:nil baseTimes:nil];
+}
+
 
 @end

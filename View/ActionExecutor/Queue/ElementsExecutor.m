@@ -1,7 +1,7 @@
 #import "ElementsExecutor.h"
 #import "_ActionExecutor_.h"
 
-#import "ViewKeyValueHelper.h"
+#import "KeyValueHelper.h"
 
 
 @implementation ElementsExecutor
@@ -37,9 +37,9 @@
                 if ([value isKindOfClass:[NSDictionary class]]) {
                     id obj = object;
                     if (keyPath) obj = [object valueForKey: keyPath];
-                    [[ViewKeyValueHelper sharedInstance] setValues: value object:obj];
+                    [[KeyValueHelper sharedInstance] setValues: value object:obj];
                 } else {
-                    [[ViewKeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];
+                    [[KeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];
                 }
                 
             } completion:nil];
@@ -49,9 +49,9 @@
             if ([value isKindOfClass:[NSDictionary class]]) {
                 id obj = object;
                 if (keyPath) obj = [object valueForKey: keyPath];
-                [[ViewKeyValueHelper sharedInstance] setValues: value object:object];
+                [[KeyValueHelper sharedInstance] setValues: value object:object];
             } else {
-                [[ViewKeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];
+                [[KeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];
             }
             
         }

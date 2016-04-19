@@ -12,6 +12,8 @@
     bool isPause;
     
     LinkList* taskObjectList;    // TO BE OPTIMIZED , NOT THREAD SAFE
+    
+    NSOperationQueue* _operationQueue;
 }
 
 
@@ -27,6 +29,8 @@
         isDispatching = NO;
         scheduledThread = [[NSThread alloc] initWithTarget: self selector:@selector(messageDispatcher) object:nil];
         condition = [[NSCondition alloc] init];
+        
+        _operationQueue = [[NSOperationQueue alloc] init];
     }
     return self;
 }
@@ -57,9 +61,9 @@
             id target = (__bridge id)(p1->target);
             
             if ([target conformsToProtocol: @protocol(ScheduledTaskProtocol)] || [target respondsToSelector: @selector(scheduledTask)]) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    [target performSelector: @selector(scheduledTask)];
-                });
+                [_operationQueue addOperationWithBlock:^{
+                    [target scheduledTask];
+                }];
             }
             
             // < 0 , loop every timeElapsed

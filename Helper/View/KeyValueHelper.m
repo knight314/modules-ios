@@ -1,4 +1,4 @@
-#import "ViewKeyValueHelper.h"
+#import "KeyValueHelper.h"
 
 #import "ColorHelper.h"
 #import "RectHelper.h"
@@ -6,32 +6,22 @@
 
 #import <objc/runtime.h>
 
-
-
 #define TYPE_UICOLOR            @"UIColor"
 #define TYPE_UIIMAGE            @"UIImage" 
-
-
 
 #define TYPE_CGCOLOR            @"CGColor"
 #define TYPE_CGRECT             @"CGRect"
 #define TYPE_CGPOINT            @"CGPoint"
 #define TYPE_CGSIZE             @"CGSize"
 
-
-
 #define TYPE_CATRANSFORM3D      @"CATransform3D"
 #define TYPE_CGAFFINETRANSFORM  @"CGAffineTransform"
 
 
-
-
-@implementation ViewKeyValueHelper
+@implementation KeyValueHelper
 {
     KeyValueCodingTranslator translateValueHandler;
 }
-
-
 -(KeyValueCodingTranslator) translateValueHandler
 {
     return translateValueHandler;
@@ -42,35 +32,32 @@
     translateValueHandler = handler;
 }
 
-
-
 #pragma mark - Public Methods
 
 -(void) setValues: (NSDictionary*)config object:(NSObject*)object
 {
-    NSDictionary* propertiesTypes = [ViewKeyValueHelper getClassPropertieTypes: [object class]];
+    NSDictionary* propertiesTypes = [KeyValueHelper getClassPropertieTypes: [object class]];
     for (NSString* key in config) {
         id value = config[key];
         [self setValue: value keyPath:key object:object propertiesTypes:propertiesTypes];
     }
 }
 
-
 -(void) setValue:(id)value keyPath:(NSString*)keyPath object:(NSObject*)object
 {
     [self setValue:value keyPath:keyPath object:object propertiesTypes:nil];
 }
 
-
 // https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Key-ValueCodingExtensions/Key-ValueCodingExtensions.html
-
 -(void) setValue:(id)value keyPath:(NSString*)keyPath object:(NSObject*)object propertiesTypes:(NSDictionary*)propertiesTypes
 {
-    if (!propertiesTypes) propertiesTypes = [ViewKeyValueHelper getClassPropertieTypes: [object class]];
+    if (!propertiesTypes) {
+        propertiesTypes = [KeyValueHelper getClassPropertieTypes: [object class]];
+    }
 
     NSString* propertyType = propertiesTypes[keyPath];
     
-    id translatedValue = [ViewKeyValueHelper translateValue: value type:propertyType];
+    id translatedValue = [KeyValueHelper translateValue: value type:propertyType];
     
     if (translateValueHandler) {
         translatedValue = translateValueHandler(object, value, propertyType, keyPath);
@@ -79,20 +66,21 @@
     [object setValue:translatedValue forKeyPath: keyPath];
 }
 
-
-
-
-
 #pragma mark - Class Methods
 
-+(ViewKeyValueHelper*) sharedInstance
+static KeyValueHelper* sharedInstance = nil;
+
++(KeyValueHelper*) sharedInstance
 {
-    static ViewKeyValueHelper* sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[ViewKeyValueHelper alloc] init];
-    });
+    if (!sharedInstance) {
+        sharedInstance = [[KeyValueHelper alloc] init];
+    }
     return sharedInstance;
+}
+
++(void) setSharedInstance:(KeyValueHelper*)obj
+{
+    sharedInstance = obj;
 }
 
 // http://imapisit.com/post/18508442936/programmatically-get-property-name-type-value-with
@@ -102,7 +90,6 @@
 // http://blog.csdn.net/icmmed/article/details/17298961
 // http://stackoverflow.com/questions/16861204/property-type-or-class-using-reflection
 // https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
-
 +(NSMutableDictionary *)getClassPropertieTypes:(Class)clazz
 {
     if (clazz == NULL) return nil;
@@ -135,8 +122,6 @@
     return results;
 }
 
-
-
 +(NSArray *)getClassPropertiesNames: (Class)clazz
 {
     NSMutableArray* results = [NSMutableArray array];
@@ -155,14 +140,7 @@
     return results;
 }
 
-
-
-
-
-
-
-
-
+// TODO ... UIFont , UIEdgeInset ... and so on 
 +(id) translateValue:(id)value type:(NSString*)type
 {
     if (! type) return value;
@@ -200,20 +178,21 @@
         if ([value isKindOfClass:[NSString class]]) {
             result = [self getUIImageByPath: value];
         }
-        
     }
     
     return result;
 }
 
+#define kRootDirectoryString @"/"
+#define kHomeDirectoryString @"~"
 
 +(UIImage*) getUIImageByPath: (NSString*)path
 {
-    if ([path hasPrefix:@"/"]) {
+    if ([path hasPrefix:kRootDirectoryString]) {
         return [UIImage imageWithContentsOfFile: path];
         
-    } else if ([path hasPrefix:@"~"]) {
-        return [UIImage imageWithContentsOfFile: [path stringByReplacingOccurrencesOfString:@"~" withString:NSHomeDirectory()]];
+    } else if ([path hasPrefix:kHomeDirectoryString]) {
+        return [UIImage imageWithContentsOfFile: [path stringByReplacingOccurrencesOfString:kHomeDirectoryString withString:NSHomeDirectory()]];
         
     } else {
         return [UIImage imageNamed: path];
@@ -221,15 +200,14 @@
     return nil;
 }
 
-
 +(NSString*) getResourcePath: (NSString*)path
 {
     NSString* result = path;
-    if ([path hasPrefix:@"/"]) {
+    if ([path hasPrefix:kRootDirectoryString]) {
         // do nothing
         
-    } else if ([path hasPrefix:@"~"]) {
-        result = [path stringByReplacingOccurrencesOfString:@"~" withString:NSHomeDirectory()];
+    } else if ([path hasPrefix:kHomeDirectoryString]) {
+        result = [path stringByReplacingOccurrencesOfString:kHomeDirectoryString withString:NSHomeDirectory()];
         
     } else {
         result = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: path];
@@ -239,15 +217,11 @@
     return result;
 }
 
-
 +(BOOL) isType:(NSString*)type keyPathType:(NSString*)keyPathType
 {
     if (! keyPathType) return false;
     
     return [keyPathType rangeOfString:type].location != NSNotFound;
 }
-
-
-
 
 @end
