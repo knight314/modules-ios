@@ -41,6 +41,7 @@
 
 
 @property (assign) CGFloat eachCellWidth;   // should be CGFloat ! important !!! cause will raise the caculate problem
+@property (assign) CGFloat eachCellHeight;
 
 @property (assign, nonatomic) int currentIndex;
 

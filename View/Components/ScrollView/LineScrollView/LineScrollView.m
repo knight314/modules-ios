@@ -5,25 +5,17 @@
 #import "UIView+Frame.h"
 #import "NSArray+Additions.h"
 
-
+#define kEACHCELLWIDTH_KEYPATH @"eachCellWidth"
 
 @implementation LineScrollView {
     Class __cellClass;
-
     float previousOffsetx;
-    
-//    int currentIndex;
 }
 
-
 @synthesize currentIndex;
-
 @synthesize contentView;
-
 @synthesize dataSource;
-
 @synthesize currentDirection;
-
 
 
 - (id)initWithFrame:(CGRect)frame
@@ -39,7 +31,7 @@
         self.showsVerticalScrollIndicator = NO;
         self.showsHorizontalScrollIndicator = NO;
 
-        [self addObserver: self forKeyPath:@"eachCellWidth" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+        [self addObserver: self forKeyPath:kEACHCELLWIDTH_KEYPATH options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
         
         UITapGestureRecognizer* gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(aTapAction:)];
         [self addGestureRecognizer: gesture];
@@ -49,7 +41,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"eachCellWidth"]) {
+    if ([keyPath isEqualToString:kEACHCELLWIDTH_KEYPATH]) {
         if ([change[@"old"] floatValue] != [change[@"new"] floatValue]) {
             [self reloadCells];
         }
@@ -140,6 +132,7 @@
     // begin
     int viewIndex = 0;
     float allCellsLength = 0.0f;
+    CGFloat perCellHeight = self.eachCellHeight;
     CGFloat perCellWidth = self.eachCellWidth;
     int count = width / perCellWidth;
     int cellCount = count + 2;                      // need two to reuse
@@ -152,7 +145,7 @@
             cell = [[__cellClass alloc] init];
         }
         
-        cell.frame = CGRectMake(allCellsLength, 0, perCellWidth, height);
+        cell.frame = CGRectMake(allCellsLength, height/2 - perCellHeight/2, perCellWidth, perCellHeight);   // height/2 - perCellHeight/2 means center in Y
         [contentView addSubview: cell];
         
         allCellsLength += perCellWidth;
@@ -168,7 +161,6 @@
     
     self.contentSize = CGSizeMake(allCellsLength, height);
     contentView.frame = CGRectMake(0, 0, self.contentSize.width, self.contentSize.height);
-    
 }
 
 -(void)layoutSubviews
