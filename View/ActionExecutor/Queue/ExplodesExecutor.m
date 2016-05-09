@@ -4,6 +4,7 @@
 #import <objc/runtime.h>
 
 #import "ViewHelper.h"
+#import "KeyValueHelper.h"
 #import "UIImage+Additions.h"
 
 
@@ -23,7 +24,7 @@
     CALayer* coverLayer = [CALayer layer];
     
     // hard code now ...
-    [LayerHelper setAttributesValues: config[@"cover.layer"] layer:coverLayer];
+    [[KeyValueHelper sharedInstance] setValues:config[@"cover.layer"] object:coverLayer];
     double duration = animation.duration - 0.1;
     
     
@@ -100,8 +101,7 @@
             CGImageRelease(tileImage);
 
             [tiles addObject: tile];
-            [LayerHelper setAttributesValues: config[@"tiles.layer"] layer:tile];
-            
+            [[KeyValueHelper sharedInstance] setValues:config[@"tiles.layer"] object:tile];
         }
     }
     return tiles;

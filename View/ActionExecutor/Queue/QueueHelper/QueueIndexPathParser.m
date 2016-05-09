@@ -73,7 +73,7 @@ NSMutableArray* indexPathsRepository = nil;
 }
 +(void) replaceElementsWithExistingIndexPathsRepository: (NSMutableArray*)indexPaths
 {
-    // this situation : [ [1,2], "c_v", [3,4]  ]
+    // this situation : [ [1,2], "k_current_value", [3,4]  ]
     for (NSUInteger i = 0; i < indexPaths.count; i++) {
         NSArray* coordinate = indexPaths[i];
         if( ![coordinate isKindOfClass:[NSArray class]] || coordinate.count != 2) continue;

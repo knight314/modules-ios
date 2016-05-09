@@ -1,15 +1,11 @@
 #import "QueueExecutorBase.h"
 #import "_ActionExecutor_.h"
 
-
-#import "QueueValuesHelper.h"
+#import "KeyValueHelper.h"
 #import "QueueTimeCalculator.h"
 
 #import "EaseFunction.h"
 #import "ActionAnimateHelper.h"
-
-
-
 
 
 #define defaultStepTime 0.05
@@ -126,7 +122,6 @@
     if (objects.count == 0) return;
     
     CAKeyframeAnimation* animation = [CAKeyframeAnimation animation];
-
     animation.delegate = self;
     
     NSString* keyPath = config[@"keyPath"];
@@ -145,17 +140,13 @@
     if (config[@"speed"]) {
         animation.speed = [config[@"speed"] floatValue];
     }
-    
     [ActionAnimateHelper applyFillMode: config animation:animation];
-    
-    
     
     
     int emptyIndividual = 0 ;
     int objectsCount = (int)objects.count;
-
-    double stepTime = config[@"stepTime"] ? [config[@"stepTime"] floatValue] : defaultStepTime;
     
+    double stepTime = config[@"stepTime"] ? [config[@"stepTime"] floatValue] : defaultStepTime;
     float elementActivityOffset = [config[@"element.startingOffset"] floatValue];
     
     double totalTime = 0 ;
@@ -167,7 +158,6 @@
     double intervalUnitTime = isByTotalTime ? totalTime : stepTime;
     
     BOOL isLeaveEmpty = [config[@"queue.isLeaveEmpty"] boolValue];
-    
     
     
     for (int i = objectsCount - 1; i >= 0; i--) {
@@ -185,7 +175,7 @@
 //        [animation setValue: view forKey:QueueAnimationObject];
         
         
-        NSArray* transitionValues = values ? values : [QueueValuesHelper translateValues:keyPath object:view values:config[@"values"]];
+        NSArray* transitionValues = values ? values : [self translateConfigValues:config[@"values"] object:view keyPath:keyPath];
         int viewsValuesOffset = (int)transitionValues.count - objectsCount;
         
         // set the animation values
@@ -317,6 +307,19 @@
 }
 
 
+-(NSMutableArray*) translateConfigValues:(NSArray*)values object:(UIView*)object keyPath:(NSString*)keyPath
+{
+    NSMutableArray* results = [NSMutableArray array];
+    NSDictionary* propertiesTypes = [KeyValueHelper getClassPropertieTypes: [object.layer class]];
+    NSString* keyPathType = propertiesTypes[keyPath];
+    for (NSUInteger i = 0; i < values.count; i++) {
+        id value = values[i];
+        id newValue = [[KeyValueHelper sharedInstance] translateValue:value type:keyPathType object:object keyPath:keyPath];
+        [results addObject:newValue];
+    }
+    return results.count ? results : nil;
+}
+
 
 
 #pragma mark - Subclass Optional Override Methods
@@ -383,13 +386,6 @@
     [view.layer removeAnimationForKey: animation.keyPath];
     [view.layer addAnimation: animation forKey:animation.keyPath];
 }
-
-
-
-
-
-
-
 
 
 

@@ -1,19 +1,21 @@
 #import <UIKit/UIKit.h>
 
 
-typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, NSString* type, NSString* key);
+typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, id result, NSString* type, NSString* keyPath);
 
 @interface KeyValueHelper : NSObject
 
 -(KeyValueCodingTranslator) translateValueHandler;
+
 -(void) setTranslateValueHandler:(KeyValueCodingTranslator)handler;
 
 #pragma mark - Public Methods
 
--(void) setValues: (NSDictionary*)config object:(NSObject*)object;
--(void) setValue:(id)value keyPath:(NSString*)keyPath object:(NSObject*)object;
--(void) setValue:(id)value keyPath:(NSString*)keyPath object:(NSObject*)object propertiesTypes:(NSDictionary*)propertiesTypes;
+-(void) setValues:(NSDictionary*)config object:(NSObject*)object;
 
+-(void) setValue:(id)value keyPath:(NSString*)keyPath object:(NSObject*)object;
+
+-(id) translateValue:(id)value type:(NSString*)type object:(NSObject*)object keyPath:(NSString*)keyPath;
 
 #pragma mark - Class Methods
 
@@ -21,11 +23,11 @@ typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, NSString* type, N
 
 +(void) setSharedInstance:(KeyValueHelper*)obj;
 
-+(NSArray *)getClassPropertiesNames: (Class)clazz;
-
 +(NSMutableDictionary *)getClassPropertieTypes:(Class)clazz;
 
-+(id) translateValue:(id)value type:(NSString*)type;
++(id) translateValue:(id)value keyPath:(NSString*)keyPath;
+
+#pragma mark - Utilities Methods;
 
 +(UIImage*) getUIImageByPath: (NSString*)path;
 

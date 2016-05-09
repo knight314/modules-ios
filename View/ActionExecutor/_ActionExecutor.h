@@ -6,8 +6,6 @@
 
 #import "QueueViewsHelper.h"
 
-#import "QueueValuesHelper.h"
-
 #import "QueueTimeCalculator.h"
 
 #import "QueuePositionsHelper.h"

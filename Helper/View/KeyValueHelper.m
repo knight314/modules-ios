@@ -34,7 +34,7 @@
 
 #pragma mark - Public Methods
 
--(void) setValues: (NSDictionary*)config object:(NSObject*)object
+-(void) setValues:(NSDictionary*)config object:(NSObject*)object
 {
     NSDictionary* propertiesTypes = [KeyValueHelper getClassPropertieTypes: [object class]];
     for (NSString* key in config) {
@@ -48,24 +48,25 @@
     [self setValue:value keyPath:keyPath object:object propertiesTypes:nil];
 }
 
-// https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Key-ValueCodingExtensions/Key-ValueCodingExtensions.html
 -(void) setValue:(id)value keyPath:(NSString*)keyPath object:(NSObject*)object propertiesTypes:(NSDictionary*)propertiesTypes
 {
     if (!propertiesTypes) {
         propertiesTypes = [KeyValueHelper getClassPropertieTypes: [object class]];
     }
-
     NSString* propertyType = propertiesTypes[keyPath];
+    id translatedValue = [self translateValue:value type:propertyType object:object keyPath:keyPath];
     
-    id translatedValue = [KeyValueHelper translateValue: value type:propertyType];
-    
-    if (translateValueHandler) {
-        translatedValue = translateValueHandler(object, value, propertyType, keyPath);
-    }
-    
-    // note: if "object" don't have the "keyPath"
-    // like "NormalButton" , override the "-(void) setValue:(id)value forUndefinedKey:(NSString *)key" method
+    // i.e. override the "-(void) setValue:(id)value forUndefinedKey:(NSString *)key" method
     [object setValue:translatedValue forKeyPath: keyPath];
+}
+
+-(id) translateValue:(id)value type:(NSString*)type object:(NSObject*)object keyPath:(NSString*)keyPath
+{
+    id result = [KeyValueHelper translateValue: value keyPath:type];
+    if (translateValueHandler) {
+        result = translateValueHandler(object, value, result, type, keyPath);
+    }
+    return result;
 }
 
 #pragma mark - Class Methods
@@ -124,59 +125,31 @@ static KeyValueHelper* sharedInstance = nil;
     return results;
 }
 
-+(NSArray *)getClassPropertiesNames: (Class)clazz
+// TODO ... UIFont , UIEdgeInset ... and so on
+// https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Key-ValueCodingExtensions/Key-ValueCodingExtensions.html
++(id) translateValue:(id)value keyPath:(NSString*)keyPath
 {
-    NSMutableArray* results = [NSMutableArray array];
-    
-    unsigned int count, i;
-    objc_property_t *properties = class_copyPropertyList(clazz, &count);
-    
-    for (i = 0; i < count; i++) {
-        objc_property_t property = properties[i];
-        const char *name = property_getName(property);
-        NSString *propertyName = [NSString stringWithUTF8String:name];
-        
-        [results addObject: propertyName];
-    }
-    
-    return results;
-}
-
-// TODO ... UIFont , UIEdgeInset ... and so on 
-+(id) translateValue:(id)value type:(NSString*)type
-{
-    if (! type) return value;
+    if (!keyPath) return value;
     
     id result = value;
-    
-    const char* rawType = [type UTF8String];
+    const char* rawType = [keyPath UTF8String];
     
     if (strcmp(rawType, @encode(CGColorRef)) == 0) {
-        
         result = (id)[ColorHelper parseColor: value].CGColor;
         
     } else if (strcmp(rawType, @encode(CGRect)) == 0) {
-        
-        CGRect rect = [RectHelper parseRect: value];
-        result = [NSValue valueWithCGRect: CanvasCGRect(rect)];
+        result = [NSValue valueWithCGRect: CanvasCGRect([RectHelper parseRect: value])];
         
     } else if (strcmp(rawType, @encode(CGPoint)) == 0) {
-        
-        CGPoint point = [RectHelper parsePoint: value];
-        result = [NSValue valueWithCGPoint: CanvasCGPoint(point)];
+        result = [NSValue valueWithCGPoint: CanvasCGPoint([RectHelper parsePoint: value])];
         
     } else if (strcmp(rawType, @encode(CGSize)) == 0) {
+        result = [NSValue valueWithCGSize: CanvasCGSize([RectHelper parseSize: value])];
         
-        CGSize size = [RectHelper parseSize: value];
-        result = [NSValue valueWithCGSize: CanvasCGSize(size)];
-        
-    } else if ([self isType:TYPE_UICOLOR keyPathType:type]) {
-        
+    } else if ([self isType:TYPE_UICOLOR keyPathType:keyPath]) {
         result = (id)[ColorHelper parseColor: value];
         
-    } else if ([self isType:TYPE_UIIMAGE keyPathType:type]) {
-        
-        // for image path or name
+    } else if ([self isType:TYPE_UIIMAGE keyPathType:keyPath]) {
         if ([value isKindOfClass:[NSString class]]) {
             result = [self getUIImageByPath: value];
         }
@@ -184,6 +157,8 @@ static KeyValueHelper* sharedInstance = nil;
     
     return result;
 }
+
+#pragma mark - Utilities Methods
 
 #define kRootDirectoryString @"/"
 #define kHomeDirectoryString @"~"

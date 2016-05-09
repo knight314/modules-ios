@@ -1,7 +1,7 @@
 #import "ViewHelper.h"
 #import <QuartzCore/QuartzCore.h>
 
-#import "LayerHelper.h"
+#import "KeyValueHelper.h"
 
 
 
@@ -46,8 +46,7 @@
     id maskToBoundsObj = config[@"masksToBounds"];
     maskToBoundsObj = maskToBoundsObj ? maskToBoundsObj : @(YES);
     [dictionary setObject:maskToBoundsObj forKey:@"masksToBounds"];
-    
-    [LayerHelper setAttributesValues: config layer:view.layer ];
+    [[KeyValueHelper sharedInstance] setValues:config object:view.layer];
     
     [dictionary removeAllObjects];
     
@@ -60,8 +59,7 @@
     id shadowRadiusObj = config[@"shadowRadius"];
     shadowRadiusObj = shadowRadiusObj ? shadowRadiusObj : @(5.0);
     [dictionary setObject: shadowRadiusObj forKey:@"shadowRadius"];
-    
-    [LayerHelper setAttributesValues: dictionary layer:shadowView.layer ];
+    [[KeyValueHelper sharedInstance] setValues:dictionary object:shadowView.layer];
     
     // re add
     UIView *superView = view.superview;
