@@ -62,7 +62,7 @@
 
 -(id) translateValue:(id)value type:(NSString*)type object:(NSObject*)object keyPath:(NSString*)keyPath
 {
-    id result = [KeyValueHelper translateValue: value keyPath:type];
+    id result = [KeyValueHelper translateValue: value type:type];
     if (translateValueHandler) {
         result = translateValueHandler(object, value, result, type, keyPath);
     }
@@ -127,7 +127,7 @@ static KeyValueHelper* sharedInstance = nil;
 
 // TODO ... UIFont , UIEdgeInset ... and so on
 // https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Key-ValueCodingExtensions/Key-ValueCodingExtensions.html
-+(id) translateValue:(id)value keyPath:(NSString*)keyPath
++(id) translateValue:(id)value type:(NSString*)keyPath
 {
     if (!keyPath) return value;
     

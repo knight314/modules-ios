@@ -25,7 +25,7 @@ typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, id result, NSStri
 
 +(NSMutableDictionary *)getClassPropertieTypes:(Class)clazz;
 
-+(id) translateValue:(id)value keyPath:(NSString*)keyPath;
++(id) translateValue:(id)value type:(NSString*)keyPath;
 
 #pragma mark - Utilities Methods;
 

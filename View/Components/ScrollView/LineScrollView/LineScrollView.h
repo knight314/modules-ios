@@ -66,8 +66,6 @@
 
 #pragma mark - Public Methods
 
--(void) reloadCells;
-
 -(void) registerCellClass:(Class)cellClass;
 
 -(LineScrollViewCell*) visibleCellAtIndex: (int)index;

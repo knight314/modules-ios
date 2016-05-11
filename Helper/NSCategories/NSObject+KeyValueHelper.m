@@ -12,12 +12,12 @@
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key
 {
-    const char *aKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
-    
     id oldValue = [self valueForUndefinedKey: key];
     if (value == oldValue) {
         return;
     }
+    
+    const char *aKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
     
     objc_setAssociatedObject(self, aKey, nil, OBJC_ASSOCIATION_RETAIN);
     objc_setAssociatedObject(self, aKey, value, OBJC_ASSOCIATION_RETAIN);

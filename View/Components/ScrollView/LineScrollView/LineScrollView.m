@@ -32,9 +32,7 @@
         self.showsHorizontalScrollIndicator = NO;
 
         [self addObserver: self forKeyPath:kEACHCELLWIDTH_KEYPATH options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
-        
-        UITapGestureRecognizer* gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(aTapAction:)];
-        [self addGestureRecognizer: gesture];
+        [self addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(aTapAction:)]];
     }
     return self;
 }
@@ -84,29 +82,23 @@
     }
 }
 
-
-
 -(void)setCurrentIndex:(int)index
 {
     currentIndex = index;
-
     [self reloadCells];
 }
 
-
--(void)setFrame:(CGRect)frame {
-    
+-(void)setFrame:(CGRect)frame
+{
     if (CGRectEqualToRect(frame, self.frame)) {
         return;
     }
-    
     // call super
     [super setFrame: frame];
     
     if (CGRectEqualToRect(frame, CGRectZero)) {
         return;
     }
-    
     [self reloadCells];
 }
 
@@ -118,7 +110,6 @@
     float width = frame.size.width;
     float height = frame.size.height;
     if (width == 0 || height == 0) return;
-    
     
     // subviews are LineScrollViewCell
     NSArray* subviews = contentView.subviews;
@@ -134,6 +125,10 @@
     float allCellsLength = 0.0f;
     CGFloat perCellHeight = self.eachCellHeight;
     CGFloat perCellWidth = self.eachCellWidth;
+    // while eachCellWidth not set, return
+    if (perCellWidth == 0.0f) {
+        return;
+    }
     int count = width / perCellWidth;
     int cellCount = count + 2;                      // need two to reuse
     currentIndex -= cellCount;
@@ -147,7 +142,6 @@
         
         cell.frame = CGRectMake(allCellsLength, height/2 - perCellHeight/2, perCellWidth, perCellHeight);   // height/2 - perCellHeight/2 means center in Y
         [contentView addSubview: cell];
-        
         allCellsLength += perCellWidth;
         
         // first call
@@ -178,24 +172,27 @@
     }
     currentDirection = direction;
     
-    // ask datasource
-    int nextIndex = currentDirection ? currentIndex - 1 : currentIndex + 1;
-    
+    // self.contentOffset.x == 0 is the first time call layoutSubviews by iOS
+    if (self.contentOffset.x != 0) {
+        int nextIndex = currentDirection ? currentIndex - 1 : currentIndex + 1;
+        if ([self shouldShowNextIndex: nextIndex]) {
+            [self relocateIfNecessary];
+        }
+    }
+}
+
+#pragma mark - Private Methods
+
+- (BOOL)shouldShowNextIndex: (int)nextIndex
+{
     BOOL shouldShowNextIndex = YES;
     if (self.lineScrollViewShouldShowIndex) {
         shouldShowNextIndex = self.lineScrollViewShouldShowIndex(self, nextIndex);
     } else if (dataSource && [dataSource respondsToSelector:@selector(lineScrollView:shouldShowIndex:)]) {
         shouldShowNextIndex = [dataSource lineScrollView:self shouldShowIndex:nextIndex];
     }
-    if (!shouldShowNextIndex) {
-        return;
-    }
-    
-    // if no return , check and do relocate if necessary.
-    if (self.contentOffset.x != 0) [self relocateIfNecessary];
+    return shouldShowNextIndex;
 }
-
-#pragma mark - Private Methods
 
 // recenter content periodically to achieve impression of infinite scrolling
 - (void)relocateIfNecessary
@@ -212,7 +209,8 @@
 }
 
 // isHeadRight means self.contentOffset.x is increasing!!!
--(void) relocateSubviews: (BOOL)isHeadingRight {
+-(void) relocateSubviews: (BOOL)isHeadingRight
+{
     if (isHeadingRight) {
         [self alignRight];
         currentIndex -- ;
@@ -269,20 +267,17 @@
 }
 
 
+#pragma mark - Utilities Methods
+
 -(int) mostLeftIndex
 {
-    int mostLeftIndex = currentDirection ? currentIndex : currentIndex - ((int)contentView.subviews.count - 1) ;
-    return mostLeftIndex;
+    return currentDirection ? currentIndex : currentIndex - ((int)contentView.subviews.count - 1) ;
 }
-
-
 
 -(void) alignRight
 {
     self.contentOffset = CGPointMake(self.eachCellWidth, self.contentOffset.y);
 }
-
-#pragma mark -
 
 -(void) reLeft {
     self.contentOffset = CGPointMake(0, self.contentOffset.y);
