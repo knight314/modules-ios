@@ -27,7 +27,7 @@
 
 @optional
 
--(BOOL)lineScrollView:(LineScrollView *)lineScrollView shouldShowIndex:(int)index;
+-(BOOL)lineScrollView:(LineScrollView *)lineScrollView shouldShowIndex:(int)index isReload:(BOOL)isReload;
 -(void)lineScrollView:(LineScrollView *)lineScrollView willShowIndex:(int)index isReload:(BOOL)isReload;
 -(void)lineScrollView:(LineScrollView *)lineScrollView touchBeganAtPoint:(CGPoint)point;
 -(void)lineScrollView:(LineScrollView *)lineScrollView touchEndedAtPoint:(CGPoint)point;

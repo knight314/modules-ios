@@ -11,6 +11,8 @@ static BOOL (^combineHandler)(NSString* key, NSMutableDictionary* destination, N
     combineHandler = handler;
 }
 
+// so now, the source is not deep copy , then the result is not fully deep copy.
+// if you want to the result is fully deep copy , you should pass the [self deepCopy: source] as source
 +(NSMutableDictionary*) combines: (NSDictionary*)destination with:(NSDictionary*)source {
     NSMutableDictionary* repository = [self deepCopy: destination];
     [self combine: repository with:source];

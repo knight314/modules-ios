@@ -118,7 +118,27 @@ static CGSize canvasSize;
 }
 
 
+#pragma mark - Real to Canvas
 
++(CGFloat) canvasX: (CGFloat)x {
+    x /= self.ratioX;
+    return x;
+}
+
++(CGFloat) canvasY: (CGFloat)y {
+    y /= self.ratioY;
+    return y;
+}
+
++(CGFloat) canvasWidth: (CGFloat)width {
+    width /= self.ratioX;
+    return width;
+}
+
++(CGFloat) canvasHeight: (CGFloat)height {
+    height /= self.ratioY;
+    return height;
+}
 
 
 #pragma mark - Ratio

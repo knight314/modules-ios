@@ -119,38 +119,51 @@
 
     currentDirection = NO;
     
-    
     // begin
-    int viewIndex = 0;
-    float allCellsLength = 0.0f;
     CGFloat perCellHeight = self.eachCellHeight;
     CGFloat perCellWidth = self.eachCellWidth;
+    CGFloat perCellY = (height - perCellHeight) / 2;
     // while eachCellWidth not set, return
     if (perCellWidth == 0.0f) {
         return;
     }
-    int count = width / perCellWidth;
-    int cellCount = count + 2;                      // need two to reuse
-    currentIndex -= cellCount;
-    for (int i = 0 ; i < cellCount; i++)
-    {
-        LineScrollViewCell* cell = [subviews safeObjectAtIndex: viewIndex];
-        viewIndex++;
+    
+    int visibleCount = width / perCellWidth;
+    int cellsCount = visibleCount + 2;  // need two to reuse
+    float allCellsLength = cellsCount * perCellWidth;
+    
+    int subviewIndex = 0;               // for reuse reason
+    int showedViewCount = 0 ;
+    int showViewIndex = currentIndex - cellsCount;
+    for (int i = 0 ; i < cellsCount; i++) {
+        showViewIndex++;
+        if (![self shouldShowNextIndex:showViewIndex isReload:YES]) {
+            continue;
+        }
+        showedViewCount++;
+        LineScrollViewCell* cell = [subviews safeObjectAtIndex:subviewIndex];
+        subviewIndex++;
         if (! cell) {
             cell = [[__cellClass alloc] init];
         }
-        
-        cell.frame = CGRectMake(allCellsLength, height/2 - perCellHeight/2, perCellWidth, perCellHeight);   // height/2 - perCellHeight/2 means center in Y
+        // set the origin y and size first
+        [cell setOriginY:perCellY];
+        [cell setSize:CGSizeMake(perCellWidth, perCellHeight)];
         [contentView addSubview: cell];
-        allCellsLength += perCellWidth;
-        
-        // first call
-        currentIndex++;
+        // cause willShowIndex Method will use the cell view , should added first
         if (self.lineScrollViewWillShowIndex) {
-            self.lineScrollViewWillShowIndex(self, currentIndex, YES);
+            self.lineScrollViewWillShowIndex(self, showViewIndex, YES);
         } else if (dataSource && [dataSource respondsToSelector: @selector(lineScrollView:willShowIndex:isReload:)]) {
-            [dataSource lineScrollView: self willShowIndex:currentIndex isReload:YES];
+            [dataSource lineScrollView: self willShowIndex:showViewIndex isReload:YES];
         }
+    }
+    
+    // set the origin x by showedViewCount
+    float perCellX = (allCellsLength - showedViewCount * perCellWidth) / 2;
+    for (int i = 0; i < showedViewCount; i++) {
+        LineScrollViewCell* cell = [contentView.subviews safeObjectAtIndex:i];
+        [cell setOriginX:perCellX];
+        perCellX += perCellWidth;
     }
     
     self.contentSize = CGSizeMake(allCellsLength, height);
@@ -175,7 +188,7 @@
     // self.contentOffset.x == 0 is the first time call layoutSubviews by iOS
     if (self.contentOffset.x != 0) {
         int nextIndex = currentDirection ? currentIndex - 1 : currentIndex + 1;
-        if ([self shouldShowNextIndex: nextIndex]) {
+        if ([self shouldShowNextIndex: nextIndex isReload:NO]) {
             [self relocateIfNecessary];
         }
     }
@@ -183,18 +196,18 @@
 
 #pragma mark - Private Methods
 
-- (BOOL)shouldShowNextIndex: (int)nextIndex
+- (BOOL)shouldShowNextIndex: (int)nextIndex isReload:(BOOL)isReload
 {
     BOOL shouldShowNextIndex = YES;
     if (self.lineScrollViewShouldShowIndex) {
         shouldShowNextIndex = self.lineScrollViewShouldShowIndex(self, nextIndex);
-    } else if (dataSource && [dataSource respondsToSelector:@selector(lineScrollView:shouldShowIndex:)]) {
-        shouldShowNextIndex = [dataSource lineScrollView:self shouldShowIndex:nextIndex];
+    } else if (dataSource && [dataSource respondsToSelector:@selector(lineScrollView:shouldShowIndex:isReload:)]) {
+        shouldShowNextIndex = [dataSource lineScrollView:self shouldShowIndex:nextIndex isReload:(BOOL)isReload];
     }
     return shouldShowNextIndex;
 }
 
-// recenter content periodically to achieve impression of infinite scrolling
+// content periodically to achieve impression of infinite scrolling
 - (void)relocateIfNecessary
 {
     // Forward Left

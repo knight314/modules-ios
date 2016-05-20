@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 
 
-typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, id result, NSString* type, NSString* keyPath);
+typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, NSString* type, NSString* keyPath);
 
 @interface KeyValueHelper : NSObject
 
@@ -25,7 +25,7 @@ typedef id(^KeyValueCodingTranslator)(NSObject* obj, id value, id result, NSStri
 
 +(NSMutableDictionary *)getClassPropertieTypes:(Class)clazz;
 
-+(id) translateValue:(id)value type:(NSString*)keyPath;
++(id) translateValue:(id)value type:(NSString*)type;
 
 #pragma mark - Utilities Methods;
 

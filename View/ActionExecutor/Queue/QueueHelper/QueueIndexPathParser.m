@@ -73,16 +73,21 @@ NSMutableArray* indexPathsRepository = nil;
 }
 +(void) replaceElementsWithExistingIndexPathsRepository: (NSMutableArray*)indexPaths
 {
-    // this situation : [ [1,2], "k_current_value", [3,4]  ]
     for (NSUInteger i = 0; i < indexPaths.count; i++) {
+        
         NSArray* coordinate = indexPaths[i];
         if( ![coordinate isKindOfClass:[NSArray class]] || coordinate.count != 2) continue;
         
-        int x = [[coordinate firstObject] intValue];
-        int y  = [[coordinate lastObject] intValue];
+        NSNumber* xNum = [coordinate firstObject];
+        NSNumber* yNum = [coordinate lastObject];
+        if(![xNum isKindOfClass:[NSNumber class]] || ![yNum isKindOfClass:[NSNumber class]]) continue;
         
+        int x = [xNum intValue];
+        int y  = [yNum intValue];
         NSArray* reusedElement = [[indexPathsRepository safeObjectAtIndex: x] safeObjectAtIndex: y];
-        if (reusedElement) [indexPaths replaceObjectAtIndex: i withObject: reusedElement];
+        if (reusedElement) {
+            [indexPaths replaceObjectAtIndex: i withObject: reusedElement];
+        }
     }
 }
 

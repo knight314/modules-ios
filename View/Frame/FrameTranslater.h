@@ -27,6 +27,8 @@
 @interface FrameTranslater : NSObject
 
 
+#pragma mark - Canvas to Real
+
 #pragma mark -
 
 +(CGSize) canvasSize;
@@ -52,9 +54,11 @@
 +(CGPoint) convertCanvasPoint: (CGPoint)point;
 
 
-#pragma mark -
+#pragma mark - Real to Canvas
 
-CGFloat CGSizeGetMax(CGSize size);
-CGFloat CGSizeGetMin(CGSize size);
++(CGFloat) canvasX: (CGFloat)x ;
++(CGFloat) canvasY: (CGFloat)y ;
++(CGFloat) canvasWidth: (CGFloat)width ;
++(CGFloat) canvasHeight: (CGFloat)height ;
 
 @end

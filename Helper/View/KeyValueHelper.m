@@ -62,11 +62,11 @@
 
 -(id) translateValue:(id)value type:(NSString*)type object:(NSObject*)object keyPath:(NSString*)keyPath
 {
-    id result = [KeyValueHelper translateValue: value type:type];
     if (translateValueHandler) {
-        result = translateValueHandler(object, value, result, type, keyPath);
+        return translateValueHandler(object, value, type, keyPath);
+    } else {
+        return [KeyValueHelper translateValue: value type:type];
     }
-    return result;
 }
 
 #pragma mark - Class Methods
@@ -127,12 +127,12 @@ static KeyValueHelper* sharedInstance = nil;
 
 // TODO ... UIFont , UIEdgeInset ... and so on
 // https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Key-ValueCodingExtensions/Key-ValueCodingExtensions.html
-+(id) translateValue:(id)value type:(NSString*)keyPath
++(id) translateValue:(id)value type:(NSString*)type
 {
-    if (!keyPath) return value;
+    if (!type) return value;
     
     id result = value;
-    const char* rawType = [keyPath UTF8String];
+    const char* rawType = [type UTF8String];
     
     if (strcmp(rawType, @encode(CGColorRef)) == 0) {
         result = (id)[ColorHelper parseColor: value].CGColor;
@@ -146,10 +146,10 @@ static KeyValueHelper* sharedInstance = nil;
     } else if (strcmp(rawType, @encode(CGSize)) == 0) {
         result = [NSValue valueWithCGSize: CanvasCGSize([RectHelper parseSize: value])];
         
-    } else if ([self isType:TYPE_UICOLOR keyPathType:keyPath]) {
+    } else if ([self isType:TYPE_UICOLOR keyPathType:type]) {
         result = (id)[ColorHelper parseColor: value];
         
-    } else if ([self isType:TYPE_UIIMAGE keyPathType:keyPath]) {
+    } else if ([self isType:TYPE_UIIMAGE keyPathType:type]) {
         if ([value isKindOfClass:[NSString class]]) {
             result = [self getUIImageByPath: value];
         }

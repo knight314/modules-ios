@@ -137,10 +137,7 @@ CGFloat CGSizeGetMin(CGSize size)
 +(CGSize) parseSize: (id)config
 {
     CGSize size = CGSizeZero;
-    if ([config isKindOfClass:[NSValue class]]) {
-        size = [config CGSizeValue];
-        
-    } else if ([config isKindOfClass: [NSArray class]]) {
+    if ([config isKindOfClass: [NSArray class]]) {
         NSArray* array = (NSArray*)config;
         size = CGSizeMake(
                           [[array safeObjectAtIndex: 0] floatValue],
