@@ -134,10 +134,10 @@
     
     int subviewIndex = 0;               // for reuse reason
     int showedViewCount = 0 ;
-    int showViewIndex = currentIndex - cellsCount;
+    currentIndex -= cellsCount;
     for (int i = 0 ; i < cellsCount; i++) {
-        showViewIndex++;
-        if (![self shouldShowNextIndex:showViewIndex isReload:YES]) {
+        currentIndex++;
+        if (![self shouldShowNextIndex:currentIndex isReload:YES]) {
             continue;
         }
         showedViewCount++;
@@ -152,9 +152,9 @@
         [contentView addSubview: cell];
         // cause willShowIndex Method will use the cell view , should added first
         if (self.lineScrollViewWillShowIndex) {
-            self.lineScrollViewWillShowIndex(self, showViewIndex, YES);
+            self.lineScrollViewWillShowIndex(self, currentIndex, YES);
         } else if (dataSource && [dataSource respondsToSelector: @selector(lineScrollView:willShowIndex:isReload:)]) {
-            [dataSource lineScrollView: self willShowIndex:showViewIndex isReload:YES];
+            [dataSource lineScrollView: self willShowIndex:currentIndex isReload:YES];
         }
     }
     
@@ -164,6 +164,7 @@
         LineScrollViewCell* cell = [contentView.subviews safeObjectAtIndex:i];
         [cell setOriginX:perCellX];
         perCellX += perCellWidth;
+        cell.backgroundColor = [UIColor redColor];
     }
     
     self.contentSize = CGSizeMake(allCellsLength, height);
