@@ -164,7 +164,6 @@
         LineScrollViewCell* cell = [contentView.subviews safeObjectAtIndex:i];
         [cell setOriginX:perCellX];
         perCellX += perCellWidth;
-        cell.backgroundColor = [UIColor redColor];
     }
     
     self.contentSize = CGSizeMake(allCellsLength, height);
