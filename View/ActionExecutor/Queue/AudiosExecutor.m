@@ -4,6 +4,11 @@
 #import "NSArray+Additions.h"
 #import "KeyValueHelper.h"
 
+@interface AudiosExecutor() <AVAudioPlayerDelegate>
+
+@end
+
+
 @implementation AudiosExecutor
 
 @synthesize systemSounds;
@@ -82,6 +87,7 @@
             NSError* error = nil;
             audio_player = [[AudioHandler alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error: &error];
             if (error) return;
+            audio_player.delegate = self;
             [audiosPlayers setObject: audio_player forKey:value];
             [audio_player prepareToPlay];
         }
@@ -119,6 +125,16 @@
         [audioPlayer stop];
     }
     [audiosPlayers removeAllObjects];
+}
+
+
+#pragma mark - AVAudioPlayerDelegate Methods
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
+{
+    if (self.playFinishAction) {
+        self.playFinishAction((AudioHandler*)player);
+    }
 }
 
 
