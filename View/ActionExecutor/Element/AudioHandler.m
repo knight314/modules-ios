@@ -10,6 +10,14 @@
     [[AudioHandler audioCrossFadeQueue] addOperation:fadeOperation];
 }
 
+- (void) fadeToStop
+{
+    MXAudioPlayerFadeOperation *fadeOperation = [[MXAudioPlayerFadeOperation alloc] initFadeWithAudioPlayer:self toVolume:self.fadeToVolume overDuration:self.fadeOverDuration];
+    [fadeOperation setDelay: self.fadeDelay];
+    fadeOperation.stopAfterFade = YES;
+    [[AudioHandler audioCrossFadeQueue] addOperation:fadeOperation];
+}
+
 
 #pragma mark - Class Methods
 

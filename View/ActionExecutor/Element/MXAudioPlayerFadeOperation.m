@@ -120,8 +120,14 @@
 }
 
 - (void)finishFadeOperation {
-    if ([self.audioPlayer isPlaying] && _pauseAfterFade) [self.audioPlayer pause];
-    if ([self.audioPlayer isPlaying] && _stopAfterFade) [self.audioPlayer stop];
+    if ([self.audioPlayer isPlaying]) {
+        if (_stopAfterFade) {
+            [self.audioPlayer stop];
+            self.audioPlayer.currentTime = 0;
+        } else if (_pauseAfterFade) {
+            [self.audioPlayer pause];
+        }
+    }
 }
 
 @end
