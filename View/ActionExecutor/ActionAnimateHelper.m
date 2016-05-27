@@ -69,8 +69,6 @@
         }
         animation.timingFunctions = timingFunctions;
     }
-    
-    
 }
 
 @end

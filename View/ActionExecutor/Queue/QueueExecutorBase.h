@@ -1,10 +1,6 @@
 #import "ActionExecutorBase.h"
 
 @class CAAnimation;
-
-//#define QueueAnimationObject     @"QueueAnimationObject"
-
-
 @class QueueExecutorBase;
 
 @protocol QueueExecutorDelegate <NSObject>

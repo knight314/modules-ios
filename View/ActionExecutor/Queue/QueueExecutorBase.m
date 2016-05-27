@@ -171,10 +171,6 @@
             continue ;
         }
         
-        // set the view as the animation object
-//        [animation setValue: view forKey:QueueAnimationObject];
-        
-        
         NSArray* transitionValues = values ? values : [self translateConfigValues:config[@"values"] object:view keyPath:keyPath];
         int viewsValuesOffset = (int)transitionValues.count - objectsCount;
         

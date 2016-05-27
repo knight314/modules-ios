@@ -19,49 +19,36 @@
         BOOL enableAction = [config[@"enableAction"] boolValue];        // default NO
         
         
-        
-        
         // Then check if dictionary and execute ~~~~~
         [CATransaction begin];
         [CATransaction setAnimationDuration: stepTime];
         [CATransaction setDisableActions: !enableAction];               // so here , default disable
         
-        
-        
         if ([object isKindOfClass:[UIView class]] && [config[@"enableTransition"] boolValue]) {
-            
             NSArray* transitions = config[@"transitions"];
             NSUInteger options = [self getUIViewAnimationOptions: transitions];
             [UIView transitionWithView: object duration:stepTime options:options animations:^{
-                
-                if ([value isKindOfClass:[NSDictionary class]]) {
-                    id obj = object;
-                    if (keyPath) obj = [object valueForKey: keyPath];
-                    [[KeyValueHelper sharedInstance] setValues: value object:obj];
-                } else {
-                    [[KeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];
-                }
-                
+                [self setTransitionValue:value object:object keyPath:keyPath];
             } completion:nil];
-            
         } else {
-            
-            if ([value isKindOfClass:[NSDictionary class]]) {
-                id obj = object;
-                if (keyPath) obj = [object valueForKey: keyPath];
-                [[KeyValueHelper sharedInstance] setValues: value object:object];
-            } else {
-                [[KeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];
-            }
-            
+            [self setTransitionValue:value object:object keyPath:keyPath];
         }
-        
         
         
         [CATransaction commit];
     }
 }
 
+-(void) setTransitionValue:(id)value object:(NSObject*)object keyPath:(NSString*)keyPath
+{
+    if ([value isKindOfClass:[NSDictionary class]]) {
+        id obj = object;
+        if (keyPath) obj = [object valueForKey: keyPath];
+        [[KeyValueHelper sharedInstance] setValues: value object:obj];
+    } else {
+        [[KeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];
+    }
+}
 
 -(NSUInteger) getUIViewAnimationOptions: (NSArray*)options
 {
