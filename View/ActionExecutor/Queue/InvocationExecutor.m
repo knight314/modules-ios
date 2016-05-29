@@ -25,7 +25,13 @@
             }
             
             [invocation retainArguments];
-            [invocation invoke];
+//            [invocation invoke];
+            
+            if (i < times.count && [times[i] floatValue] != 0) {
+                [invocation performSelector:@selector(invoke) withObject:nil afterDelay:[times[i] floatValue]];
+            } else {
+                [invocation invoke];
+            }
         }
         
     }
