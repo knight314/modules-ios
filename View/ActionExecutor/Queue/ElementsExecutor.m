@@ -11,7 +11,7 @@
     for (int i = 0; i < objects.count; i++) {
         
         UIView* view = [objects objectAtIndex: i];
-        id object = config[@"object"] ? [view valueForKey: config[@"object"]] : view ;
+        id object = config[@"object"] ? [view valueForKeyPath: config[@"object"]] : view ;
         
         id value = config[@"values"];                                   // Not key 'values' , regard as nil ~~~~
         NSString* keyPath = config[@"keyPath"];
@@ -43,7 +43,7 @@
 {
     if ([value isKindOfClass:[NSDictionary class]]) {
         id obj = object;
-        if (keyPath) obj = [object valueForKey: keyPath];
+        if (keyPath) obj = [object valueForKeyPath: keyPath];
         [[KeyValueHelper sharedInstance] setValues: value object:obj];
     } else {
         [[KeyValueHelper sharedInstance] setValue: value keyPath:keyPath object:object];

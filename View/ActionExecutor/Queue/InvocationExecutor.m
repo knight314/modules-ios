@@ -7,7 +7,7 @@
     for (int i = 0; i < objects.count; i++) {
         
         UIView* view = [objects objectAtIndex: i];
-        id object = config[@"object"] ? [view valueForKey: config[@"object"]] : view ;
+        id object = config[@"object"] ? [view valueForKeyPath: config[@"object"]] : view ;
         
         NSString* selectorString = config[@"selector"];
         SEL selector = NSSelectorFromString(selectorString);
