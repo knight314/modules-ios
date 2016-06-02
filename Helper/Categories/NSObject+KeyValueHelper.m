@@ -17,8 +17,8 @@
         return;
     }
     
+    // first set nil to release the old value, then set the new value
     const char *aKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
-    
     objc_setAssociatedObject(self, aKey, nil, OBJC_ASSOCIATION_RETAIN);
     objc_setAssociatedObject(self, aKey, value, OBJC_ASSOCIATION_RETAIN);
     
