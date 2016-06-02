@@ -7,6 +7,8 @@
 
 #import "NSString+Additions.h"
 
+#import "NSArray+KeyValueHelper.h"
+
 #import "NSObject+KeyValueHelper.h"
 
 #import "NSMutableArray+Additions.h"
