@@ -8,10 +8,9 @@
 
 -(void) clear;
 -(double) take;
--(double) takeThenClear;
 
-
-
+-(void) justClearOnePhase;
+-(double) justTakeOnePhase;
 
 #pragma mark - Class Methods
 

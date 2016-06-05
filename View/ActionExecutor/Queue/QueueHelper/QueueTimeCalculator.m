@@ -3,40 +3,46 @@
 
 @implementation QueueTimeCalculator
 {
-    double onePhaseLongestDuration; // can be many exectutors  (ActionExecutorManager runActionExecutors:)
+    double onePhaseDuration;
+    double longestDuration; // can be many exectutors  (ActionExecutorManager runActionExecutors:)
 }
 
 
 
 #pragma mark - Public Methods
+
 -(void) clear
 {
-    onePhaseLongestDuration = 0;
+    longestDuration = 0;
 }
 
 -(double) take
 {
-    return onePhaseLongestDuration;
+    return longestDuration;
 }
 
--(double) takeThenClear
+-(void) justClearOnePhase
 {
-    double temp = [self take];
-    [self clear];
-    return temp;
+    onePhaseDuration = 0;
 }
 
+-(double) justTakeOnePhase
+{
+    return onePhaseDuration;
+}
 
 #pragma mark - QueueExecutorDelegate
+
 -(void)queue:(QueueExecutorBase*)executor beginTimes:(NSArray*)beginTimes durations:(NSArray*)durations
 {
-    double totalDuration = [[QueueTimeCalculator getExtremeValue: durations isMax:YES] doubleValue];
-    if (onePhaseLongestDuration < totalDuration) {
-        onePhaseLongestDuration = totalDuration;
+    double oneQueueDuration = [[QueueTimeCalculator getExtremeValue: durations isMax:YES] doubleValue];
+    if (longestDuration < oneQueueDuration) {
+        longestDuration = oneQueueDuration;
     }
     
-//    NSLog(@"beginTimes: %@ , duratoins : %@ , totalDuration : %f", beginTimes, durations, totalDuration);
-//    NSLog(@"Effect TotalDuration: %f", onePhaseLongestDuration);
+    if (onePhaseDuration < oneQueueDuration) {
+        onePhaseDuration = oneQueueDuration;
+    }
 }
 
 -(void)queueDidStart:(QueueExecutorBase*)executor animation:(CAAnimation *)anim
@@ -48,8 +54,6 @@
 {
     
 }
-
-
 
 #pragma mark - Class Methods
 
@@ -93,8 +97,6 @@
     }
     return value;
 }
-
-
 
 +(NSMutableArray*) getBaseTimesAccordingToViews: (NSArray*)views delay:(double)delay
 {
