@@ -16,16 +16,18 @@
 +(NSMutableArray*) getViewsInVisualAreaFromViewsRepository: (CGRect)bounds;
 
 
-#pragma mark - 
+#pragma mark -
 
 +(NSMutableArray*) getViewsQueuesIn:(NSArray*)views lines:(NSArray*)lines indexPaths:(NSArray*)indexPaths;
 
 
-#pragma mark - 
+#pragma mark -
 
 +(NSMutableArray*) getUselessViews;
 
 +(NSMutableArray*) getUselessViews: (int)count;
+
++(BOOL) checkIsWholeViewsNull:(NSArray*)views;
 
 +(void) removeAnimations: (NSArray*)views;
 

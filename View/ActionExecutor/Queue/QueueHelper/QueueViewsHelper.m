@@ -212,4 +212,17 @@ NSMutableArray* viewsInVisualArea   = nil;
     }
 }
 
+// views is two dimension array
++(BOOL) checkIsWholeViewsNull:(NSArray*)views
+{
+    for (NSArray* innerViews in views) {
+        for (id view in innerViews) {
+            if (view != [NSNull null]) {
+                return NO;
+            }
+        }
+    }
+    return YES;
+}
+
 @end

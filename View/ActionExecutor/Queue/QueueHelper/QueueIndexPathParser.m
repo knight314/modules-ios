@@ -201,9 +201,9 @@ NSMutableArray* indexPathsRepository = nil;
 +(NSMutableArray*) assembleIndexPaths:(NSArray*)lines groupedNullIndexpaths:(NSArray*)groupedNullIndexpaths isBackward:(BOOL)isBackward isColumnBase:(BOOL)isColumnBase isReverse:(BOOL)isReverse
 {
     NSMutableArray* outterIndexPaths = [NSMutableArray array];
-    for (int i = 0; i < groupedNullIndexpaths.count; i++) {
+    int outterNullCount = (int)groupedNullIndexpaths.count;
+    for (int i = 0; i < outterNullCount; i++) {
         NSMutableArray* innerIndexPaths = [NSMutableArray array];
-        
         NSArray* innerGropedIndexPaths = groupedNullIndexpaths[i];
         
         // for get the row or column
