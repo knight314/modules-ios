@@ -69,7 +69,7 @@
             for (int index = 0; index < count; index++) {
                 NSArray* innerTimes = [times safeObjectAtIndex: index];
                 
-                NSArray* innerViews = [objects objectAtIndex: index];
+                NSArray* innerObjects = [objects objectAtIndex: index];
                 NSArray* innerValues = [values objectAtIndex: index];
                 
                 if (delayTime != 0 || eachInterval != 0) {
@@ -82,7 +82,7 @@
                     
                     NSMutableArray* newInnerTimes = [NSMutableArray array];
                     
-                    for (NSUInteger j = 0; j < innerViews.count; j++) {
+                    for (NSUInteger j = 0; j < innerObjects.count; j++) {
                         
                         double oldTime = [[innerTimes safeObjectAtIndex: j] doubleValue];
                         double newTime = oldTime + incrementTime;
@@ -99,7 +99,7 @@
                 NSMutableArray* innerBeginTimes = [NSMutableArray array];
                 [durations addObject: innerDurations];
                 [beginTimes addObject: innerBeginTimes];
-                [self execute: config objects:innerViews values:innerValues times:innerTimes durationsRep:innerDurations beginTimesRep:innerBeginTimes];
+                [self execute: config objects:innerObjects values:innerValues times:innerTimes durationsRep:innerDurations beginTimesRep:innerBeginTimes];
             }
         }
         
@@ -115,14 +115,24 @@
 }
 
 /*
- the last obj in views will go to the position which is the last obj in values
- and the views.count <= values.count , views.count == baseTimes.count or baseTimes is nil
+ the last obj in objects will go to the position which is the last obj in values
+ and the objects.count <= values.count , objects.count == baseTimes.count or baseTimes is nil
  */
 -(void) execute: (NSDictionary*)config objects:(NSArray*)objects values:(NSArray*)values times:(NSArray*)times durationsRep:(NSMutableArray*)durationsQueue beginTimesRep:(NSMutableArray*)beginTimesQueue {
     if (objects.count == 0) return;
     
     CAKeyframeAnimation* animation = [CAKeyframeAnimation animation];
     animation.delegate = self;
+    
+    /*
+    NSDictionary* animationKeysValues = config[@"animation"];
+    [animation setValuesForKeysWithDictionary:animationKeysValues];
+    if (animationKeysValues[@"repeatCount"]) {
+        float repeatCount = [animationKeysValues[@"repeatCount"] floatValue];
+        animation.repeatCount = repeatCount < 0 ? HUGE_VALF : repeatCount;
+    }
+     */
+    
     
     NSString* keyPath = config[@"keyPath"];
     animation.keyPath = keyPath;
@@ -161,21 +171,21 @@
     
     
     for (int i = objectsCount - 1; i >= 0; i--) {
-        UIView* view = [objects objectAtIndex: i];
-        if (! [view isKindOfClass: [UIView class]]) {
-            if (! isLeaveEmpty) {
-                emptyIndividual++ ;
-            }
+        CALayer* layer = [objects objectAtIndex: i];
+        if ([layer isKindOfClass: [UIView class]]) layer = ((UIView*)layer).layer;
+
+        if (![layer isKindOfClass: [CALayer class]]) {
+            if (!isLeaveEmpty) emptyIndividual++ ;
             [durationsQueue addObject: @(0)];
             [beginTimesQueue addObject: @(0)] ;
             continue ;
         }
         
-        NSArray* transitionValues = values ? values : [self translateConfigValues:config[@"values"] object:view keyPath:keyPath];
-        int viewsValuesOffset = (int)transitionValues.count - objectsCount;
+        NSArray* transitionValues = values ? values : [self translateConfigValues:config[@"values"] layer:layer keyPath:animation.keyPath];
+        int objectsValuesOffset = (int)transitionValues.count - objectsCount;
         
         // set the animation values
-        NSMutableArray* transitionList = [self applyTransitionMode: config values:transitionValues from:i to:i + viewsValuesOffset + emptyIndividual];
+        NSMutableArray* transitionList = [self applyTransitionMode: config values:transitionValues from:i to:i + objectsValuesOffset + emptyIndividual];
         NSMutableArray* animationValues = [self applyValuesEasing: config transitions:transitionList];
         animation.values = animationValues;
 
@@ -205,12 +215,12 @@
         [ActionAnimateHelper applyTimingsEasing: config animation:animation];
         
         
-        // after set values, before add animation to the view, set the final status
-        [self applyForwardMode: config animation:animation view:view];
+        // after set values, before add animation to the layer, set the final status
+        [self applyForwardMode: config animation:animation layer:layer];
         
         
         // finally, add the animation to the layer.
-        [self applyAnimation:animation view:view config:config];
+        [self applyAnimation:animation layer:layer config:config];
         
         
         // transfer time value to outside
@@ -294,23 +304,23 @@
 }
 
 
--(void) applyForwardMode: (NSDictionary*)config animation:(CAKeyframeAnimation*)animation view:(UIView*)view {
+-(void) applyForwardMode: (NSDictionary*)config animation:(CAKeyframeAnimation*)animation layer:(CALayer*)layer {
     BOOL forward = [config[@"forward"] boolValue];
     if (forward) {
         // Update the property in advance . After update the property , then apply animation to layer (in outside...)
-        [view.layer setValue:[animation.values lastObject] forKeyPath:animation.keyPath];        
+        [layer setValue:[animation.values lastObject] forKeyPath:animation.keyPath];
     }
 }
 
 
--(NSMutableArray*) translateConfigValues:(NSArray*)values object:(UIView*)object keyPath:(NSString*)keyPath
+-(NSMutableArray*) translateConfigValues:(NSArray*)values layer:(CALayer*)layer keyPath:(NSString*)keyPath
 {
     NSMutableArray* results = [NSMutableArray array];
-    NSDictionary* propertiesTypes = [KeyValueHelper getClassPropertieTypes: [object.layer class]];
+    NSDictionary* propertiesTypes = [KeyValueHelper getClassPropertieTypes: [layer class]];
     NSString* keyPathType = propertiesTypes[keyPath];
     for (NSUInteger i = 0; i < values.count; i++) {
         id value = values[i];
-        id newValue = [[KeyValueHelper sharedInstance] translateValue:value type:keyPathType object:object keyPath:keyPath];
+        id newValue = [[KeyValueHelper sharedInstance] translateValue:value type:keyPathType object:layer keyPath:keyPath];
         [results addObject:newValue];
     }
     return results.count ? results : nil;
@@ -377,10 +387,10 @@
 }
 
 
--(void) applyAnimation: (CAKeyframeAnimation*)animation view:(UIView*)view config:(NSDictionary*)config
+-(void) applyAnimation: (CAKeyframeAnimation*)animation layer:(CALayer*)layer config:(NSDictionary*)config
 {
-    [view.layer removeAnimationForKey: animation.keyPath];
-    [view.layer addAnimation: animation forKey:animation.keyPath];
+    [layer removeAnimationForKey: animation.keyPath];
+    [layer addAnimation: animation forKey:animation.keyPath];
 }
 
 

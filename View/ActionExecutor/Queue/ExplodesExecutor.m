@@ -17,9 +17,9 @@
 
 
 
--(void) applyAnimation: (CAKeyframeAnimation*)animation view:(UIView*)view config:(NSDictionary*)config
+-(void) applyAnimation: (CAKeyframeAnimation*)animation layer:(CALayer*)layer config:(NSDictionary*)config
 {
-    NSArray* tiles = [ExplodesExecutor split:config[@"cover.tiles"] view:view];
+    NSArray* tiles = [ExplodesExecutor split:config[@"cover.tiles"] layer:layer];
     
     CALayer* coverLayer = [CALayer layer];
     
@@ -39,9 +39,9 @@
     
     
     // after split
-    UIView* topView = [ViewHelper getTopView];
-    coverLayer.frame = [view.superview convertRect:view.frame toView:topView];
-    [topView.layer addSublayer: coverLayer];
+    CALayer* topViewLayer = [ViewHelper getTopView].layer;
+    coverLayer.frame = [layer.superlayer convertRect:layer.frame toLayer:topViewLayer];
+    [topViewLayer addSublayer: coverLayer];
     
     
     // to do ...........
@@ -49,7 +49,7 @@
     // now , the animationDidStart and animationDidStop: will not call .... so to do ...
     // to do ...........
     
-    CGSize containerSize = topView.frame.size;
+    CGSize containerSize = topViewLayer.frame.size;
     for (int i = 0; i < tiles.count; i++) {
         CALayer* tile = tiles[i];
         
@@ -70,7 +70,7 @@
 #pragma mark -
 
 // get the split layers
-+(NSMutableArray*)split: (NSDictionary*)config view:(UIView*)view
++(NSMutableArray*)split: (NSDictionary*)config layer:(CALayer*)layer
 {
     int row = [config[@"row"] intValue];
     int column = [config[@"column"] intValue];
@@ -79,9 +79,9 @@
     
     NSMutableArray* tiles = [NSMutableArray array];
     
-    CGSize viewSize = view.frame.size;
-    CGFloat borderWidth = view.layer.borderWidth;
-    CGImageRef image = [ViewHelper imageFromView: view].CGImage;
+    CGSize viewSize = layer.frame.size;
+    CGFloat borderWidth = layer.borderWidth;
+    CGImageRef image = [ViewHelper imageFromLayer: layer].CGImage;
     
     CGSize tileSize = CGSizeMake( (viewSize.width - borderWidth * 2) / row, (viewSize.height  - borderWidth * 2) / column);
     

@@ -6,8 +6,11 @@
 {
     for (int i = 0; i < objects.count; i++) {
         
-        UIView* view = [objects objectAtIndex: i];
-        id object = config[@"object"] ? [view valueForKeyPath: config[@"object"]] : view ;
+        id object = [objects objectAtIndex: i];
+        NSString* subObject = config[@"object"];
+        if (subObject) {
+            object = [object valueForKeyPath: subObject];
+        }
         
         NSString* selectorString = config[@"selector"];
         SEL selector = NSSelectorFromString(selectorString);

@@ -9,11 +9,6 @@
 #define TYPE_UICOLOR            @"UIColor"
 #define TYPE_UIIMAGE            @"UIImage" 
 
-#define TYPE_CGCOLOR            @"CGColor"
-#define TYPE_CGRECT             @"CGRect"
-#define TYPE_CGPOINT            @"CGPoint"
-#define TYPE_CGSIZE             @"CGSize"
-
 #define TYPE_CATRANSFORM3D      @"CATransform3D"
 #define TYPE_CGAFFINETRANSFORM  @"CGAffineTransform"
 

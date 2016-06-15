@@ -390,28 +390,36 @@
 
 #pragma mark -
 
-
-+ (UIImage *)imageFromView: (UIView *) view
++ (UIImage *)imageFromView: (UIView*) view
 {
     return [self imageFromView: view atRect:CGRectNull];
 }
 
-
 // http://stackoverflow.com/questions/4334233/how-to-capture-uiview-to-uiimage-without-loss-of-quality-on-retina-display
 + (UIImage *)imageFromView: (UIView *)view atRect:(CGRect)rect
 {
-//    UIGraphicsBeginImageContext(CGSizeMake(view.frame.size.width, view.frame.size.height) );
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0); // recommended
-    
     if (!CGRectEqualToRect(rect, CGRectNull)) UIRectClip(rect);
-    
     [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];     // recommened
-//    [view.layer renderInContext: UIGraphicsGetCurrentContext()];
-    
+//    [layer renderInContext: UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    
     UIGraphicsEndImageContext();
-    
+    return image;
+}
+
++ (UIImage *)imageFromLayer: (CALayer*) layer
+{
+    return [self imageFromLayer: layer atRect:CGRectNull];
+}
+
++ (UIImage *)imageFromLayer: (CALayer *)layer atRect:(CGRect)rect
+{
+    UIGraphicsBeginImageContextWithOptions(layer.bounds.size, layer.opaque, 0.0); // recommended
+    if (!CGRectEqualToRect(rect, CGRectNull)) UIRectClip(rect);
+//    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];     // recommened
+    [layer renderInContext: UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
     return image;
 }
 

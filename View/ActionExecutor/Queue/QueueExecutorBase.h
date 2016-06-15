@@ -39,6 +39,6 @@
 
 
 // now for the ExplodesExecutor
--(void) applyAnimation: (CAKeyframeAnimation*)animation view:(UIView*)view config:(NSDictionary*)config;
+-(void) applyAnimation: (CAKeyframeAnimation*)animation layer:(CALayer*)layer config:(NSDictionary*)config;
 
 @end

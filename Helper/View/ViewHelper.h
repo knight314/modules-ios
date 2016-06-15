@@ -64,8 +64,10 @@
 #pragma mark -
 
 
-+ (UIImage *)imageFromView: (UIView *) view;
-+ (UIImage *)imageFromView: (UIView *) view   atRect:(CGRect)rect;
++ (UIImage *)imageFromView: (UIView*) view;
++ (UIImage *)imageFromView: (UIView *)view atRect:(CGRect)rect;
++ (UIImage *)imageFromLayer: (CALayer*) layer;
++ (UIImage *)imageFromLayer: (CALayer *)layer atRect:(CGRect)rect;
 
 
 #pragma mark - 
