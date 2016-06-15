@@ -5,7 +5,6 @@
 #import "QueueTimeCalculator.h"
 
 #import "EaseFunction.h"
-#import "ActionAnimateHelper.h"
 
 
 #define defaultStepTime 0.05
@@ -123,14 +122,20 @@
     
     CAKeyframeAnimation* animation = [CAKeyframeAnimation animation];
     animation.delegate = self;
-    
     animation.keyPath = config[@"keyPath"];
     
+    /*
+     // About the relationship about fillMode & removedOnCompletion
+     // IOS default is YES, when removedOnCompletion = NO , the fillMode would work.
+     animation.removedOnCompletion = NO;
+     // IOS default is kCAFillModeRemoved
+     animation.fillMode = kCAFillModeForwards ;
+     */
     NSDictionary* animationKeysValues = config[@"Animation"];
     [animation setValuesForKeysWithDictionary:animationKeysValues];
-    
-    if (animationKeysValues[@"repeatCount"]) {
-        float repeatCount = [animationKeysValues[@"repeatCount"] floatValue];
+    NSNumber* repeatCountNum = animationKeysValues[@"repeatCount"];
+    if (repeatCountNum) {
+        float repeatCount = [repeatCountNum floatValue];
         animation.repeatCount = repeatCount < 0 ? HUGE_VALF : repeatCount;
     }
     
@@ -142,8 +147,9 @@
     
     double totalTime = 0 ;
     BOOL isByTotalTime = NO;
-    if (config[@"element.totalTransitTime"]) {
-        totalTime = [config[@"element.totalTransitTime"] doubleValue] ;
+    NSNumber* eTotalTransitTime = config[@"element.totalTransitTime"];
+    if (eTotalTransitTime) {
+        totalTime = [eTotalTransitTime doubleValue] ;
         isByTotalTime = YES;
     }
     double intervalUnitTime = isByTotalTime ? totalTime : stepTime;
@@ -193,11 +199,15 @@
         
         
         // after the keyTimes over, set the timing easing
-        [ActionAnimateHelper applyTimingsEasing: config animation:animation];
+        [self applyTimingsEasing: config animation:animation];
         
         
         // after set values, before add animation to the layer, set the final status
-        [self applyForwardMode: config animation:animation layer:layer];
+        BOOL forward = [config[@"forward"] boolValue];
+        if (forward) {
+            // Update the property in advance . After update the property , then apply animation to layer
+            [layer setValue:[animation.values lastObject] forKeyPath:animation.keyPath];
+        }
         
         
         // finally, add the animation to the layer.
@@ -229,8 +239,9 @@
     
     int listCount = (int)transitions.count;
     int degree = listCount - 1 ;
-    if (config[@"queue.easingDegree"]) {
-        int steps = [config[@"queue.easingDegree"] intValue];
+    NSNumber* qEasingDegree = config[@"queue.easingDegree"];
+    if (qEasingDegree) {
+        int steps = [qEasingDegree intValue];
         if (steps > degree) degree = steps;
     }
     
@@ -284,12 +295,31 @@
     return keyTimes;
 }
 
-
--(void) applyForwardMode: (NSDictionary*)config animation:(CAKeyframeAnimation*)animation layer:(CALayer*)layer {
-    BOOL forward = [config[@"forward"] boolValue];
-    if (forward) {
-        // Update the property in advance . After update the property , then apply animation to layer (in outside...)
-        [layer setValue:[animation.values lastObject] forKeyPath:animation.keyPath];
+// when controll each , should after setKeyTimes (need the keyTimes was set)
+-(void) applyTimingsEasing: (NSDictionary*)config animation:(CAKeyframeAnimation*)animation
+{
+    NSArray* timing = config[@"queue.timingFunction"];
+    if (timing) {
+        float c1x = [[timing safeObjectAtIndex:0] floatValue];
+        float c1y = [[timing safeObjectAtIndex:1] floatValue];
+        float c2x = [[timing safeObjectAtIndex:2] floatValue];
+        float c2y = [[timing safeObjectAtIndex:3] floatValue];
+        animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints: c1x :c1y :c2x :c2y];
+    }
+    
+    NSArray* timings = config[@"queue.keyTimesFunctions"];
+    if (timings) {
+        float c1x = [[timings safeObjectAtIndex:0] floatValue];
+        float c1y = [[timings safeObjectAtIndex:1] floatValue];
+        float c2x = [[timings safeObjectAtIndex:2] floatValue];
+        float c2y = [[timings safeObjectAtIndex:3] floatValue];
+        
+        NSUInteger count = animation.keyTimes.count;
+        NSMutableArray* timingFunctions = [NSMutableArray arrayWithCapacity: count];
+        for (NSUInteger i = 0; i < count - 1 ; i++ ) {
+            [timingFunctions addObject: [CAMediaTimingFunction functionWithControlPoints: c1x :c1y :c2x :c2y]];
+        }
+        animation.timingFunctions = timingFunctions;
     }
 }
 
@@ -306,7 +336,6 @@
     }
     return results.count ? results : nil;
 }
-
 
 
 #pragma mark - Subclass Optional Override Methods
