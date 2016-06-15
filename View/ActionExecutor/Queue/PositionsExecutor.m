@@ -7,7 +7,6 @@
 
 #pragma mark - Override Methods
 
-
 // extend the transition.mode ... , call super and add 2
 -(NSMutableArray*) applyTransitionMode: (NSDictionary*)config values:(NSArray*)values from:(int)fromIndex to:(int)toIndex
 {
@@ -27,7 +26,6 @@
     
     return transitionList;
 }
-
 
 // cause value are CGPoint
 -(id) getEasingValue: (NSArray*)transitions index:(int)index nextIndex:(int)nextIndex argument:(double)argument
@@ -61,22 +59,6 @@
     
     return [[transitions objectAtIndex:index] CGPointValue];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #pragma mark - Utilities Methods

@@ -15,8 +15,6 @@
 
 #pragma mark - Override Methods
 
-
-
 -(void) applyAnimation: (CAKeyframeAnimation*)animation layer:(CALayer*)layer config:(NSDictionary*)config
 {
     NSArray* tiles = [ExplodesExecutor split:config[@"cover.tiles"] layer:layer];

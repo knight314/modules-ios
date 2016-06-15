@@ -124,34 +124,15 @@
     CAKeyframeAnimation* animation = [CAKeyframeAnimation animation];
     animation.delegate = self;
     
-    /*
-    NSDictionary* animationKeysValues = config[@"animation"];
+    animation.keyPath = config[@"keyPath"];
+    
+    NSDictionary* animationKeysValues = config[@"Animation"];
     [animation setValuesForKeysWithDictionary:animationKeysValues];
+    
     if (animationKeysValues[@"repeatCount"]) {
         float repeatCount = [animationKeysValues[@"repeatCount"] floatValue];
         animation.repeatCount = repeatCount < 0 ? HUGE_VALF : repeatCount;
     }
-     */
-    
-    
-    NSString* keyPath = config[@"keyPath"];
-    animation.keyPath = keyPath;
-    
-    if (config[@"autoreverses"]) {
-        animation.autoreverses = [config[@"autoreverses"] boolValue];
-    }
-    if (config[@"repeatCount"]) {
-        float repeatCount = [config[@"repeatCount"] floatValue];
-        animation.repeatCount = repeatCount < 0 ? HUGE_VALF : repeatCount;
-    }
-    if (config[@"repeatDuration"]) {
-        animation.repeatDuration = [config[@"repeatDuration"] doubleValue];
-    }
-    if (config[@"speed"]) {
-        animation.speed = [config[@"speed"] floatValue];
-    }
-    [ActionAnimateHelper applyFillMode: config animation:animation];
-    
     
     int emptyIndividual = 0 ;
     int objectsCount = (int)objects.count;
