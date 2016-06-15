@@ -12,7 +12,7 @@
 {
     NSMutableArray* transitionList = [super applyTransitionMode:config values:values from:fromIndex to:toIndex];
     
-    int transitionMode = [config[@"transition.mode"] intValue];
+    int transitionMode = [config[@"transitionMode"] intValue];
     
     // skip , just jump to the turning point
     if (transitionMode == 2) {

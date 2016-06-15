@@ -25,11 +25,11 @@
         NSNumber* stepTimeNum = [config objectForKey: @"stepTime"];
         double stepTime = stepTimeNum ? [stepTimeNum floatValue] : defaultStepTime;
         
-        NSNumber* delayNumber = [config objectForKey: @"matrix.delayRelativeToMilestone"];
+        NSNumber* delayNumber = [config objectForKey: @"matrix_delayRelativeToMilestone"];
         int delayCount = delayNumber ? [delayNumber intValue] : 0;
         double delayTime = stepTime * delayCount;                   // A . the resutl we need first
         
-        NSNumber* intervalNumber = [config objectForKey: @"matrix.delayRelativeToQueueIndex"];
+        NSNumber* intervalNumber = [config objectForKey: @"matrix_delayRelativeToQueueIndex"];
         int eachInterval = intervalNumber ? [intervalNumber  intValue] : 0;
         
         
@@ -143,18 +143,18 @@
     int objectsCount = (int)objects.count;
     
     double stepTime = config[@"stepTime"] ? [config[@"stepTime"] floatValue] : defaultStepTime;
-    float elementActivityOffset = [config[@"element.startingOffset"] floatValue];
+    float elementActivityOffset = [config[@"element_startingOffset"] floatValue];
     
     double totalTime = 0 ;
     BOOL isByTotalTime = NO;
-    NSNumber* eTotalTransitTime = config[@"element.totalTransitTime"];
+    NSNumber* eTotalTransitTime = config[@"element_totalTransitTime"];
     if (eTotalTransitTime) {
         totalTime = [eTotalTransitTime doubleValue] ;
         isByTotalTime = YES;
     }
     double intervalUnitTime = isByTotalTime ? totalTime : stepTime;
     
-    BOOL isLeaveEmpty = [config[@"queue.isLeaveEmpty"] boolValue];
+    BOOL isLeaveEmpty = [config[@"queue_isLeaveEmpty"] boolValue];
     
     
     for (int i = objectsCount - 1; i >= 0; i--) {
@@ -233,13 +233,13 @@
 -(NSMutableArray*) applyValuesEasing: (NSDictionary*)config transitions:(NSMutableArray*)transitions {
     if (! transitions || transitions.count <= 1) return transitions;
     
-    EasingType easeType = [[config objectForKey: @"queue.easingType"] intValue];
+    EasingType easeType = [[config objectForKey: @"queue_easingType"] intValue];
     NSKeyframeAnimationFunction easeFunction = [EaseFunction easingFunctionForType: easeType];
     if (! easeFunction) return transitions;
     
     int listCount = (int)transitions.count;
     int degree = listCount - 1 ;
-    NSNumber* qEasingDegree = config[@"queue.easingDegree"];
+    NSNumber* qEasingDegree = config[@"queue_easingDegree"];
     if (qEasingDegree) {
         int steps = [qEasingDegree intValue];
         if (steps > degree) degree = steps;
@@ -298,7 +298,7 @@
 // when controll each , should after setKeyTimes (need the keyTimes was set)
 -(void) applyTimingsEasing: (NSDictionary*)config animation:(CAKeyframeAnimation*)animation
 {
-    NSArray* timing = config[@"queue.timingFunction"];
+    NSArray* timing = config[@"queue_timingFunction"];
     if (timing) {
         float c1x = [[timing safeObjectAtIndex:0] floatValue];
         float c1y = [[timing safeObjectAtIndex:1] floatValue];
@@ -307,7 +307,7 @@
         animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints: c1x :c1y :c2x :c2y];
     }
     
-    NSArray* timings = config[@"queue.keyTimesFunctions"];
+    NSArray* timings = config[@"queue_keyTimesFunctions"];
     if (timings) {
         float c1x = [[timings safeObjectAtIndex:0] floatValue];
         float c1y = [[timings safeObjectAtIndex:1] floatValue];
@@ -346,7 +346,7 @@
     
     NSMutableArray* transitionList = [NSMutableArray array];
     
-    int transitionMode = [config[@"transition.mode"] intValue];
+    int transitionMode = [config[@"transitionMode"] intValue];
     
         // iterate, just iterate all the values
     if (transitionMode == -1) {

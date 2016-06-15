@@ -7,7 +7,7 @@
 -(void) execute: (NSDictionary*)config onObject:(NSObject*)object {
     if ([object isKindOfClass: [UIImageView class]]){
         UIImageView* imageView = (UIImageView*)object;
-        NSNumber* duration = [config objectForKey: @"element.totalTransitTime"] ;
+        NSNumber* duration = [config objectForKey: @"element_totalTransitTime"] ;
         NSNumber* repeatCount = [config objectForKey: @"repeatCount"] ;
         
         imageView.animationDuration = (duration != NULL) ? [duration floatValue] : 0.05 ;
