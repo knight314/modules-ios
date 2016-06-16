@@ -36,20 +36,17 @@
 
 @implementation FrameTranslater
 
-static CGSize canvasSize;
-
-
-
+static CGSize canvas;
 
 #pragma mark -
 
-+(CGSize) canvasSize
++(CGSize) canvas
 {
-    return canvasSize;
+    return canvas;
 }
-+(void) setCanvasSize: (CGSize)canvas
++(void) setCanvas:(CGSize)design
 {
-    canvasSize = canvas;
+    canvas = design;
     [self updateCanvasRatio];
 }
 
@@ -92,9 +89,6 @@ static CGSize canvasSize;
     return height;
 }
 
-
-
-
 +(CGPoint) convertCanvasPoint: (CGPoint)point
 {
     CGFloat x = [self convertCanvasX: point.x];
@@ -109,11 +103,11 @@ static CGSize canvasSize;
     return CGSizeMake(width, height);
 }
 
-+(CGRect) convertCanvasRect: (CGRect)canvas {
-    CGFloat x = [self convertCanvasX: canvas.origin.x];
-    CGFloat y = [self convertCanvasY: canvas.origin.y];
-    CGFloat width = [self convertCanvasWidth: canvas.size.width];
-    CGFloat height = [self convertCanvasHeight: canvas.size.height];
++(CGRect) convertCanvasRect: (CGRect)rect {
+    CGFloat x = [self convertCanvasX: rect.origin.x];
+    CGFloat y = [self convertCanvasY: rect.origin.y];
+    CGFloat width = [self convertCanvasWidth: rect.size.width];
+    CGFloat height = [self convertCanvasHeight: rect.size.height];
     return CGRectMake(x, y, width, height);
 }
 
@@ -140,6 +134,22 @@ static CGSize canvasSize;
     return height;
 }
 
++(CGPoint) canvasPoint: (CGPoint)point
+{
+    return CGPointMake([self canvasX:point.x], [self canvasY:point.y]);
+}
+
++(CGSize) canvasSize: (CGSize)size
+{
+    return CGSizeMake([self canvasWidth:size.width], [self canvasHeight:size.height]);
+}
+
++(CGRect) canvasRect: (CGRect)rect
+{
+    return CGRectMake([self canvasX:rect.origin.x], [self canvasY:rect.origin.y], [self canvasWidth:rect.size.width], [self canvasHeight:rect.size.height]);
+}
+
+
 
 #pragma mark - Ratio
 
@@ -157,7 +167,7 @@ static float _ratioY = 1;
 }
 
 +(void) updateCanvasRatio {
-    [self getRatios: canvasSize ratioX:&_ratioX ratioY:&_ratioY];
+    [self getRatios: canvas ratioX:&_ratioX ratioY:&_ratioY];
 }
 
 /**

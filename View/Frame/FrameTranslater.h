@@ -31,8 +31,8 @@
 
 #pragma mark -
 
-+(CGSize) canvasSize;
-+(void) setCanvasSize: (CGSize)canvas;
++(CGSize) canvas;
++(void) setCanvas:(CGSize)design;
 
 
 #pragma mark -
@@ -49,9 +49,9 @@
 +(CGFloat) convertCanvasWidth: (CGFloat)x ;
 +(CGFloat) convertCanvasHeight: (CGFloat)y ;
 
++(CGPoint) convertCanvasPoint: (CGPoint)point ;
 +(CGSize) convertCanvasSize: (CGSize)size;
-+(CGRect) convertCanvasRect: (CGRect)canvas ;
-+(CGPoint) convertCanvasPoint: (CGPoint)point;
++(CGRect) convertCanvasRect: (CGRect)rect ;
 
 
 #pragma mark - Real to Canvas
@@ -60,5 +60,9 @@
 +(CGFloat) canvasY: (CGFloat)y ;
 +(CGFloat) canvasWidth: (CGFloat)width ;
 +(CGFloat) canvasHeight: (CGFloat)height ;
+
++(CGPoint) canvasPoint: (CGPoint)point;
++(CGSize) canvasSize: (CGSize)size;
++(CGRect) canvasRect: (CGRect)rect;
 
 @end

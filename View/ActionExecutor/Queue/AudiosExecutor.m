@@ -19,20 +19,18 @@
 {
     id value = [values firstObject];
     if (!value) value = config[@"values"];
+    
     double inactivityTime = [[times firstObject] doubleValue];
     if (inactivityTime > 0) {
-        NSArray* resources = @[config, value];
-        [self performSelector:@selector(playAudioDelay:) withObject:resources afterDelay:inactivityTime];
+        [self performSelector:@selector(playAudioDelay:) withObject:@[config, value] afterDelay:inactivityTime];
     } else {
         [self playAudio: config value:value];
     }
 }
 
--(void) playAudioDelay: (NSArray*)resources
+-(void) playAudioDelay: (NSArray*)configValue
 {
-    NSDictionary* config = [resources firstObject];
-    id value = [resources lastObject];
-    [self playAudio: config value:value];
+    [self playAudio: [configValue firstObject] value:[configValue lastObject]];
 }
 
 -(void) playAudio: (NSDictionary*)config value:(id)value 
