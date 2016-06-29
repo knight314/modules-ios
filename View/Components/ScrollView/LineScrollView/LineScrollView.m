@@ -49,36 +49,26 @@
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     CGPoint location = [[touches anyObject] locationInView:self];
+    LineScrollViewCell* cell = (LineScrollViewCell*)[self hitTest:location withEvent:nil];
+    if (!cell || ![cell isKindOfClass:[LineScrollViewCell class]]) return;
     
-    if (self.lineScrollViewTouchBeganAtPoint) {
-        self.lineScrollViewTouchBeganAtPoint(self, location);
-    } else if (dataSource && [dataSource respondsToSelector: @selector(lineScrollView:touchBeganAtPoint:)]) {
-        [dataSource lineScrollView: self touchBeganAtPoint:location];
+    if (self.lineScrollViewTouchBeganAtCell) {
+        self.lineScrollViewTouchBeganAtCell(self, cell);
+    } else if (dataSource && [dataSource respondsToSelector: @selector(lineScrollView:touchBeganAtCell:)]) {
+        [dataSource lineScrollView: self touchBeganAtCell:cell];
     }
 }
-
-/*
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    CGPoint location = [[touches anyObject] locationInView:self];
-    
-    if (self.lineScrollViewTouchEndedAtPoint) {
-        self.lineScrollViewTouchEndedAtPoint(self, location);
-    } else if (dataSource && [dataSource respondsToSelector: @selector(lineScrollView:touchEndedAtPoint:)]) {
-        [dataSource lineScrollView: self touchEndedAtPoint:location];
-    }
-}
-*/
 
 -(void) aTapAction: (UITapGestureRecognizer*)gesture
 {
     CGPoint location = [gesture locationInView: gesture.view];
-//    location = [gesture.view convertPoint: location toView:self];
-    
-    if (self.lineScrollViewTouchEndedAtPoint) {
-        self.lineScrollViewTouchEndedAtPoint(self, location);
-    } else if (dataSource && [dataSource respondsToSelector: @selector(lineScrollView:touchEndedAtPoint:)]) {
-        [dataSource lineScrollView: self touchEndedAtPoint:location];
+    LineScrollViewCell* cell = (LineScrollViewCell*)[self hitTest:location withEvent:nil];
+    if (!cell || ![cell isKindOfClass:[LineScrollViewCell class]]) return;
+
+    if (self.lineScrollViewTouchEndedAtCell) {
+        self.lineScrollViewTouchEndedAtCell(self, cell);
+    } else if (dataSource && [dataSource respondsToSelector: @selector(lineScrollView:touchEndedAtCell:)]) {
+        [dataSource lineScrollView: self touchEndedAtCell:cell];
     }
 }
 

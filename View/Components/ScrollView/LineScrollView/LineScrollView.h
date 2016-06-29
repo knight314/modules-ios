@@ -29,8 +29,8 @@
 
 -(BOOL)lineScrollView:(LineScrollView *)lineScrollView shouldShowIndex:(int)index isReload:(BOOL)isReload;
 -(void)lineScrollView:(LineScrollView *)lineScrollView willShowIndex:(int)index isReload:(BOOL)isReload;
--(void)lineScrollView:(LineScrollView *)lineScrollView touchBeganAtPoint:(CGPoint)point;
--(void)lineScrollView:(LineScrollView *)lineScrollView touchEndedAtPoint:(CGPoint)point;
+-(void)lineScrollView:(LineScrollView *)lineScrollView touchBeganAtCell:(LineScrollViewCell *)cell;
+-(void)lineScrollView:(LineScrollView *)lineScrollView touchEndedAtCell:(LineScrollViewCell *)cell;
 
 
 @end
@@ -57,8 +57,8 @@
 
 @property (copy) BOOL(^lineScrollViewShouldShowIndex)(LineScrollView *lineScrollView, int index);
 @property (copy) void(^lineScrollViewWillShowIndex)(LineScrollView *lineScrollView, int index, BOOL isReload);
-@property (copy) void(^lineScrollViewTouchBeganAtPoint)(LineScrollView *lineScrollView, CGPoint point);
-@property (copy) void(^lineScrollViewTouchEndedAtPoint)(LineScrollView *lineScrollView, CGPoint point);
+@property (copy) void(^lineScrollViewTouchBeganAtCell)(LineScrollView *lineScrollView, LineScrollViewCell *cell);
+@property (copy) void(^lineScrollViewTouchEndedAtCell)(LineScrollView *lineScrollView, LineScrollViewCell *cell);
 
 
 
