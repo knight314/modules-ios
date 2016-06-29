@@ -67,7 +67,7 @@ static CGSize canvas;
 }
 
 
-#pragma mark -
+#pragma mark - Canvas to Real
 
 +(CGFloat) convertCanvasX: (CGFloat)x {
     x *= self.ratioX;

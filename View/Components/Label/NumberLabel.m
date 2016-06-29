@@ -68,20 +68,11 @@
 
 #pragma mark - Overrides
 
--(void)setNumber:(float)number
+- (void)setNumber:(float)number
 {
     _number = number;
-    [self setText: [NSString stringWithFormat:format, number]];
-}
-
-- (void)setText:(NSString *)text {
-    if (!text || ([text isKindOfClass:[NSString class]] && [text isEqualToString: @""])) {
-        [super setText: nil];
-    } else {
-        _number = [text floatValue];
-        increment = (_number - currentNumber) * kTimerInterval / animationDuration;
-        [self startTimer];
-    }
+    increment = (_number - currentNumber) * kTimerInterval / animationDuration;
+    [self startTimer];
 }
 
 - (void)dealloc {

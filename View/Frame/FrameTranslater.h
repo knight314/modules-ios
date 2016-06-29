@@ -42,7 +42,7 @@
 +(CGFloat) convertFontSize: (CGFloat)fontSize ;
 
 
-#pragma mark -
+#pragma mark - Canvas to Real
 
 +(CGFloat) convertCanvasX: (CGFloat)x ;
 +(CGFloat) convertCanvasY: (CGFloat)y ;
