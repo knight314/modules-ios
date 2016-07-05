@@ -19,26 +19,33 @@
         id value = config[@"values"];                                   // Not key 'values' , regard as nil ~~~~
         NSString* keyPath = config[@"keyPath"];
         CFTimeInterval stepTime = [config[@"stepTime"] doubleValue];    // default 0
-        BOOL enableAction = [config[@"enableAction"] boolValue];        // default NO
         
         
-        // Then check if dictionary and execute ~~~~~
-        [CATransaction begin];
-        [CATransaction setAnimationDuration: stepTime];
-        [CATransaction setDisableActions: !enableAction];               // so here , default disable
+        // so here , "transitions" is for UIView , and , "disableTransaction" is for CALayer
         
-        if ([object isKindOfClass:[UIView class]] && [config[@"enableTransition"] boolValue]) {
-            NSArray* transitions = config[@"transitions"];
+        
+        NSArray* transitions = config[@"transitions"];
+        if ([object isKindOfClass:[UIView class]] && transitions) {
+            
             NSUInteger options = [self getUIViewAnimationOptions: transitions];
             [UIView transitionWithView: object duration:stepTime options:options animations:^{
                 [self setTransitionValue:value object:object keyPath:keyPath];
             } completion:nil];
-        } else {
+            
+        } else if ([object isKindOfClass:[CALayer class]]) {
+            
+            BOOL enableAction = [config[@"disableTransaction"] boolValue];        // default NO
+            [CATransaction begin];
+            [CATransaction setAnimationDuration: stepTime];
+            [CATransaction setDisableActions: enableAction];               // so here , default enable the transition
             [self setTransitionValue:value object:object keyPath:keyPath];
+            [CATransaction commit];
+            
+        } else {
+            
+            [self setTransitionValue:value object:object keyPath:keyPath];
+            
         }
-        
-        
-        [CATransaction commit];
     }
 }
 
