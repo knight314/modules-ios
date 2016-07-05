@@ -30,8 +30,11 @@
 }
 
 -(id)initWithURLString: (NSString*)urlString parameters:(NSDictionary*)parameters timeoutInterval:(NSTimeInterval)timeoutInterval {
-    self = [super init];
+    if (!urlString) {
+        return nil;
+    }
     
+    self = [super init];
     if (self) {
         NSURL* url = [self getURL: urlString parameters:parameters];
         NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:timeoutInterval] ;
@@ -42,7 +45,6 @@
         
         connectionReceivedData = [[NSMutableData alloc] initWithCapacity:0];
     }
-    
     return self;
 }
 

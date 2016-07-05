@@ -113,10 +113,6 @@
     
     NSDictionary *addresses = [self getIPAddresses];
     
-#ifdef DEBUG
-//    NSLog(@"IP Addresses: %@", addresses);
-#endif
-    
     __block NSString *address;
     [searchArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop)
      {
