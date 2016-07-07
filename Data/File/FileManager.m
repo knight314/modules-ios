@@ -45,6 +45,7 @@
 
 #pragma mark - Delete, Copy, Save, Move , Create , Check Exist ...
 
+// full path can be a file or directory
 +(NSError*) deleteFile: (NSString*)fullPath {
     NSError* error = nil;
     [NSFileManagerInstance removeItemAtPath: fullPath error:&error];
