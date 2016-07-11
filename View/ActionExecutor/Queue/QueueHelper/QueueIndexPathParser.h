@@ -19,7 +19,7 @@
 +(NSMutableArray*) getIndexPathsIn: (NSArray*)array element:(id)element;
 +(NSMutableArray*) getIndexPathsIn: (NSArray*)lines elements:(NSArray*)elements;
 
-+(NSMutableArray*) groupTheNullIndexPaths: (NSArray*)nullIndexPaths isNullIndexPathsBreakWhenNotCoterminous:(BOOL)isNullIndexPathsBreakWhenNotCoterminous isColumnBase:(BOOL)isColumnBase;
++(NSMutableArray*) groupNullIndexPaths: (NSArray*)nullIndexPaths isNullIndexPathsBreakWhenNotCoterminous:(BOOL)isNullIndexPathsBreakWhenNotCoterminous isColumnBase:(BOOL)isColumnBase;
 
 
 

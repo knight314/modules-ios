@@ -164,7 +164,7 @@ NSMutableArray* indexPathsRepository = nil;
 
 
 
-+(NSMutableArray*) groupTheNullIndexPaths: (NSArray*)nullIndexPaths isNullIndexPathsBreakWhenNotCoterminous:(BOOL)isNullIndexPathsBreakWhenNotCoterminous isColumnBase:(BOOL)isColumnBase
++(NSMutableArray*) groupNullIndexPaths: (NSArray*)nullIndexPaths isNullIndexPathsBreakWhenNotCoterminous:(BOOL)isNullIndexPathsBreakWhenNotCoterminous isColumnBase:(BOOL)isColumnBase
 {
     NSMutableArray* sortedKeys = [NSMutableArray array];
     NSMutableDictionary* groupedResult = [NSMutableDictionary dictionary];
