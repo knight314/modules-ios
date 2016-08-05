@@ -166,7 +166,7 @@ NSMutableArray* indexPathsRepository = nil;
 
 +(NSMutableArray*) groupNullIndexPaths: (NSArray*)nullIndexPaths isNullIndexPathsBreakWhenNotCoterminous:(BOOL)isNullIndexPathsBreakWhenNotCoterminous isColumnBase:(BOOL)isColumnBase
 {
-    NSMutableArray* sortedKeys = [NSMutableArray array];
+    NSMutableArray* keys = [NSMutableArray array];
     NSMutableDictionary* groupedResult = [NSMutableDictionary dictionary];
     
     // then do group job
@@ -174,17 +174,17 @@ NSMutableArray* indexPathsRepository = nil;
         NSArray* indexPath = [nullIndexPaths objectAtIndex: i];
         NSString* key = isColumnBase ? [[indexPath lastObject] stringValue] : [[indexPath firstObject] stringValue];
         
-        if (! groupedResult[key]) {
+        if (!groupedResult[key]) {
             [groupedResult setObject: [NSMutableArray array] forKey:key];
-            [sortedKeys addObject: key];
+            [keys addObject: key];
         }
         [groupedResult[key] addObject: indexPath];
     }
     
     // for maintain the order
-    NSMutableArray* results = [NSMutableArray arrayWithCapacity: sortedKeys.count];
-    for (NSUInteger i = 0; i < sortedKeys.count; i++) {
-        NSString* key = sortedKeys[i];
+    NSMutableArray* results = [NSMutableArray array];
+    for (int i = 0; i < keys.count; i++) {
+        NSString* key = keys[i];
         NSArray* oneGroupedNullIndexPaths = groupedResult[key];
         if (isNullIndexPathsBreakWhenNotCoterminous) {
             [results addObjectsFromArray:[self breakWhenNotCoterminous: oneGroupedNullIndexPaths isColumnBase:isColumnBase]];
