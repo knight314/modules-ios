@@ -92,7 +92,7 @@ static const void* key_delegate = "delegate";
         [delegate webViewDidFinishLoad:webView];
     }
 }
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(nullable NSError *)error
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     // external custom
     if ([self respondsToSelector:@selector(delegateDidFailLoadWithError:)]) {

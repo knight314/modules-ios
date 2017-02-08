@@ -57,6 +57,7 @@
 
 -(void)awakeFromNib
 {
+    [super awakeFromNib];
     [self setDefaultVariables];
 }
 
