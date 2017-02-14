@@ -43,11 +43,7 @@
 
 -(CGSize) getTextSize
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     return [self.text sizeWithAttributes: @{NSFontAttributeName: self.font}];
-#else
-    return [self.text sizeWithFont:self.font];
-#endif
 }
 
 -(CGFloat) getTextWidth

@@ -12,7 +12,7 @@ static BOOL (^combineHandler)(int index, NSMutableArray* destination, NSArray* s
 }
 
 +(NSMutableArray*) combines: (NSArray*)destination with:(NSArray*)source {
-    NSMutableArray* repository = [self deepCopy: destination];
+    NSMutableArray* repository = [destination deepCopy];
     [self combine: repository with:source];
     return repository;
 }
@@ -63,28 +63,6 @@ static BOOL (^combineHandler)(int index, NSMutableArray* destination, NSArray* s
         va_end(params);
     }
 }
-
-// Note here , this method do not copy the deepest element object
-+(NSMutableArray*) deepCopy: (NSArray*)source {
-    NSMutableArray* destination = [NSMutableArray array];
-    [self deepCopy: source to:destination];
-    return destination;
-}
-+(void) deepCopy: (NSArray*)source to:(NSMutableArray*)destination  {
-    for (int i = 0; i < source.count; i++) {
-        id obj = [source objectAtIndex: i];
-        
-        if ([obj isKindOfClass: [NSArray class]]) {
-            obj = [ArrayHelper deepCopy:obj];
-        } else if ([obj isKindOfClass: [NSDictionary class]]) {
-            obj = [DictionaryHelper deepCopy:obj];
-        }
-        [destination addObject: obj];
-    }
-}
-
-
-
 
 +(BOOL) isTwoDimension: (NSArray*)array
 {
@@ -152,7 +130,7 @@ static BOOL (^combineHandler)(int index, NSMutableArray* destination, NSArray* s
 // return ["1","2", "4","5","6"], just put the frontContents to front
 +(NSMutableArray*) reRangeContents: (NSArray*)array frontContents:(NSArray*)frontContents
 {
-    NSMutableArray* newContents = [ArrayHelper deepCopy: array];
+    NSMutableArray* newContents = [array deepCopy];
     NSArray* intersections = [ArrayHelper intersect: array with:frontContents];
     [ArrayHelper subtract: newContents with: intersections];             // remove the front keys in array
     [newContents insertObjects: intersections atIndexes:[NSIndexSet indexSetWithIndexesInRange:(NSRange){0, intersections.count}]];  // then insert the front keys in the front

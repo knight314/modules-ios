@@ -12,9 +12,6 @@ typedef BOOL (^DictionaryCombineHandler)(NSString* sourceKey, NSMutableDictionar
 +(void) combine: (NSMutableDictionary*)destination with:(NSDictionary*)source handler:(DictionaryCombineHandler)handler;
 
 
-+(NSMutableDictionary*) deepCopy: (NSDictionary*)source ;
-+(void) deepCopy: (NSDictionary*)source to:(NSMutableDictionary*)destination  ;
-
 #pragma mark = About Key
 
 +(NSArray*) getSortedKeys: (NSDictionary*)dictionary;

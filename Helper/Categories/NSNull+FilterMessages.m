@@ -6,7 +6,7 @@
 //  Copyright © 2017 Lou Jiwei. All rights reserved.
 //
 
-#import "NSNull+FilterMessage.h"
+#import "NSNull+FilterMessages.h"
 
 @implementation NSNull (FilterMessage)
 

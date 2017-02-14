@@ -2,6 +2,7 @@
 
 #import "ArrayHelper.h"
 #import "NSArray+Additions.h"
+#import "NSDictionary+Additions.h"
 
 @implementation DictionaryHelper
 
@@ -14,7 +15,7 @@ static BOOL (^combineHandler)(NSString* key, NSMutableDictionary* destination, N
 // so now, the source is not deep copy , then the result is not fully deep copy.
 // if you want to the result is fully deep copy , you should pass the [self deepCopy: source] as source
 +(NSMutableDictionary*) combines: (NSDictionary*)destination with:(NSDictionary*)source {
-    NSMutableDictionary* repository = [self deepCopy: destination];
+    NSMutableDictionary* repository = [destination deepCopy];
     [self combine: repository with:source];
     return repository;
 }
@@ -44,30 +45,6 @@ static BOOL (^combineHandler)(NSString* key, NSMutableDictionary* destination, N
 }
 
 
-
-
-
-
-
-
-// Note here , this method do not copy the deepest element object
-+(NSMutableDictionary*) deepCopy: (NSDictionary*)source {
-    NSMutableDictionary* destination = [NSMutableDictionary dictionary];
-    [self deepCopy: source to:destination];
-    return destination;
-}
-+(void) deepCopy: (NSDictionary*)source to:(NSMutableDictionary*)destination  {
-    for (NSString* key in source) {
-        id obj = [source objectForKey: key];
-        
-        if ([obj isKindOfClass: [NSDictionary class]]) {
-            obj = [DictionaryHelper deepCopy:obj];
-        } else if ([obj isKindOfClass: [NSArray class]]) {
-            obj = [ArrayHelper deepCopy: obj];
-        }
-        [destination setObject: obj forKey:key];
-    }
-}
 
 #pragma mark = About Key
 
