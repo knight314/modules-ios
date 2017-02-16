@@ -1,11 +1,29 @@
 #import <Foundation/Foundation.h>
 
-@interface NSDate(Operator)
+#define DATE_PATTERN_DOT @"yyyy.MM.dd"
+#define DATE_PATTERN_DASH @"yyyy-MM-dd"
+
+@interface NSDate (Additions)
+
+- (NSDate*)cutTime ;
+
+@end
+
+
+@interface NSDate (String)
+
+- (NSString*)stringWithPattern:(NSString *)pattern;
+
++ (NSDate *)dateFromString:(NSString *)string pattern:(NSString*)pattern;
+
+@end
+
+
+@interface NSDate (Compare)
 
 // GT for Greate Than
 // LT for Less Than
 // EQ for Equal
-
 
 /**
  *  compare with time
@@ -25,7 +43,4 @@
 -(BOOL) GTEQDate:(NSDate*)date;
 -(BOOL) LTEQDate:(NSDate*)date;
 
-
 @end
-
-

@@ -2,8 +2,7 @@
 
 @implementation UIImage (Alpha)
 
-
-- (UIImage *)imageByApplyingAlpha:(CGFloat) alpha {
+- (instancetype)alpha:(CGFloat)alpha {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, 0.0f);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGRect area = CGRectMake(0, 0, self.size.width, self.size.height);
@@ -12,9 +11,9 @@
     CGContextSetBlendMode(ctx, kCGBlendModeMultiply);
     CGContextSetAlpha(ctx, alpha);
     CGContextDrawImage(ctx, area, self.CGImage);
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return newImage;
+    return image;
 }
 
 @end
@@ -22,13 +21,11 @@
 
 @implementation UIImage (Color)
 
-+ (UIImage *)imageWithColor:(UIColor*) color
-{
++ (UIImage *)imageWithColor:(UIColor*)color {
     return [self imageWithColor:color rect:CGRectMake(0.0f, 0.0f, 1.0f, 1.0f)];
 }
 
-+ (UIImage *)imageWithColor:(UIColor*) color rect:(CGRect)rect
-{
++ (UIImage *)imageWithColor:(UIColor*)color rect:(CGRect)rect {
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, [color CGColor]);

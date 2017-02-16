@@ -1,7 +1,7 @@
-#import "NSArray+KeyValueHelper.h"
+#import "NSArray+KeyValueCoding.h"
 #import <objc/runtime.h>
 
-@implementation NSArray(KeyValueHelper)
+@implementation NSArray (KeyValueCoding)
 
 +(void) load
 {
@@ -12,7 +12,6 @@
 
 -(id) __Hook_valueForKey:(NSString *)key
 {
-
     NSScanner *scanner = [NSScanner scannerWithString: key];
     BOOL isNumeric = [scanner scanFloat:NULL] && [scanner isAtEnd];
     if (isNumeric) {

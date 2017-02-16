@@ -1,7 +1,7 @@
-#import "CALayer+KeyValueHelper.h"
+#import "CALayer+KeyValueCoding.h"
 #import <objc/runtime.h>
 
-@implementation CALayer(KeyValueHelper)
+@implementation CALayer (KeyValueCoding)
 
 + (void)load
 {
@@ -9,7 +9,6 @@
     Method newMethod = class_getInstanceMethod([self class], @selector(__Hook_setValue:forUndefinedKey:));
     method_exchangeImplementations(oldMethod, newMethod);
 }
-
 
 - (void)__Hook_setValue:(id)value forUndefinedKey:(NSString *)key
 {

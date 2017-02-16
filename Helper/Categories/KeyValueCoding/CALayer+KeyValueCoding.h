@@ -1,5 +1,5 @@
 #import <QuartzCore/QuartzCore.h>
 
-@interface CALayer (KeyValueHelper)
+@interface CALayer (KeyValueCoding)
 
 @end

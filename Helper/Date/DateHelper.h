@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 
 #define PATTERN_CLOCK @"HH:mm:ss"
-#define PATTERN_DATE @"yyyy-MM-dd"
 #define PATTERN_DATE_TIME @"yyyy-MM-dd HH:mm:ss"
 #define PATTERN_DATE_TIME_ZONE @"yyyy-MM-dd HH:mm:ss Z"
 
@@ -22,8 +21,6 @@
 
 + (NSDate*) translateDateToCurrentLocale: (NSDate*)date ;
 
-
-+ (NSDate*) truncateTime: (NSDate*)date;
 + (NSDate*) truncateToday: (NSDate*)date;
 
 + (NSInteger) getAgeFromBirthday: (NSDate*)birthday;

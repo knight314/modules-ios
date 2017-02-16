@@ -21,7 +21,6 @@ static NSDateFormatter* defaultFormatter = nil;
     
 }
 
-
 + (NSString*)stringFromString:(NSString *)sourceString fromPattern:(NSString*)fromPattern toPattern:(NSString*)toPattern {
     NSDateFormatter* df = [self getLocaleDateFormater: fromPattern];
     NSDate *date = [df dateFromString:sourceString];
@@ -86,18 +85,6 @@ static NSDateFormatter* defaultFormatter = nil;
     NSString* dateString = [dateFormatter stringFromDate: date];
     NSDate* newDate = [dateFormatter dateFromString: dateString];
     return newDate;
-}
-
-
-// e.g. 2010-10-30 10:14:13 -> 2010-10-30 00:00:00
-+ (NSDate*) truncateTime: (NSDate*)date
-{
-    unsigned int flags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay;
-    NSCalendar* calendar = [NSCalendar currentCalendar];
-    NSDateComponents* components = [calendar components:flags fromDate:date];
-    NSDate* truncateDate = [calendar dateFromComponents:components];
-//           truncateDate = [[calendar dateFromComponents:components] dateByAddingTimeInterval:[[NSTimeZone localTimeZone] secondsFromGMT]];
-    return truncateDate;
 }
 
 // e.g. 2010-10-30 10:14:13 -> 2013-11-20 10:14:13  (2013-11-20 is today)

@@ -1,10 +1,6 @@
-//
-//  NSMutableArray+Additions.m
-
 #import "NSMutableArray+Additions.h"
 
-@implementation NSMutableArray (Movement)
-
+@implementation NSMutableArray (Move)
 
 -(void) moveFirstObjectToLast
 {
@@ -22,13 +18,21 @@
     [self insertObject: lastObj atIndex:0];
 }
 
+- (void)reverse {
+    if ([self count] == 0) return;
+    NSUInteger i = 0;
+    NSUInteger j = [self count] - 1;
+    while (i < j) {
+        [self exchangeObjectAtIndex:i withObjectAtIndex:j];
+        i++;
+        j--;
+    }
+}
+
 @end
 
 
-
-
-@implementation NSMutableArray (SafeReplace)
-
+@implementation NSMutableArray (Replace)
 
 - (void)safeReplaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject
 {
@@ -38,20 +42,14 @@
 @end
 
 
+@implementation NSMutableArray (Remove)
 
-
-@implementation NSMutableArray (Reverse)
-
-- (void)reverse {
-    if ([self count] == 0)
-    return;
-    NSUInteger i = 0;
-    NSUInteger j = [self count] - 1;
-    while (i < j) {
-        [self exchangeObjectAtIndex:i withObjectAtIndex:j];
-        
-        i++;
-        j--;
+- (void)removeObjectUsingComparator:(BOOL(^)(int index, id obj))comparator {
+    for (int i = 0; i < self.count; i++) {
+        if (comparator(i, self[i])) {
+            [self removeObjectAtIndex: i];
+            i--;
+        }
     }
 }
 

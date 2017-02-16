@@ -1,11 +1,3 @@
-//
-//  NSNull+FilterMessage.m
-//  DMS
-//
-//  Created by suchavision on 2/8/17.
-//  Copyright © 2017 Lou Jiwei. All rights reserved.
-//
-
 #import "NSNull+FilterMessages.h"
 
 @implementation NSNull (FilterMessage)

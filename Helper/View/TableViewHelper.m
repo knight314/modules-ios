@@ -4,21 +4,6 @@
 
 @implementation TableViewHelper
 
-
-+(NSIndexPath*) getLastIndexPath: (UITableView*)tableView
-{
-    NSInteger lastSection = tableView.numberOfSections - 1;
-    return [self getLastIndexPath: tableView inSection:lastSection];
-}
-
-+(NSIndexPath*) getLastIndexPath: (UITableView*)tableView inSection:(NSUInteger)section
-{
-    NSInteger lastRow = [tableView numberOfRowsInSection: section] - 1;
-    return [NSIndexPath indexPathForRow: lastRow inSection:section];
-}
-
-
-
 +(NSIndexPath*) getIndexPathByCellSubView:(UIView*)subView
 {
     UITableViewCell* cell = [TableViewHelper getTableViewCellBySubView: subView];
